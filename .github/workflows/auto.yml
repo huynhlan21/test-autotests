@@ -37,7 +37,7 @@ jobs:
 
       - name: Download APK file
         run: |
-          wget -O downloaded.apk https://expo.dev/artifacts/eas/jhDba2fHiueUkaChYeSu2s.apk
+          wget -O application.apk https://expo.dev/artifacts/eas/jhDba2fHiueUkaChYeSu2s.apk
           mkdir -p App
           mv application.apk App/
 
