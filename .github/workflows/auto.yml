@@ -3,7 +3,7 @@ name: Automation Build and Release
 on:
   push:
     branches:
-      - build_yml
+      - buid_yml
 
 jobs:
   test:
