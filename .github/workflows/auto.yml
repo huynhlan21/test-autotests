@@ -35,11 +35,11 @@ jobs:
       #     ref: build
       #     path: App
 
-      - name: Download APK file
-        run: |
-          wget -O application.apk https://expo.dev/artifacts/eas/jhDba2fHiueUkaChYeSu2s.apk
-          mkdir -p App
-          mv application.apk App/
+      # - name: Download APK file
+      #   run: |
+      #     wget -O application.apk https://expo.dev/artifacts/eas/jhDba2fHiueUkaChYeSu2s.apk
+      #     mkdir -p App
+      #     mv application.apk App/
 
       - name: Run Robot Framework tests
         run: |
