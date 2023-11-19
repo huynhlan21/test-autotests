@@ -1,0 +1,58 @@
+name: Automation Build and Release
+
+on:
+  push:
+    branches:
+      - build_yml
+
+jobs:
+  test:
+    name: Automation test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout automation code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Set up Robot Framework
+        run: |
+          pip install robotframework
+          pip install robotframework-seleniumlibrary
+        # Add any additional Robot Framework dependencies here
+
+      # - name: Checkout application code
+      #   uses: actions/checkout@v4
+      #   with:
+      #     repository: huynhlan21/test
+      #     ref: build
+      #     path: App
+
+      - name: Download APK file
+        run: |
+          wget -O downloaded.apk https://expo.dev/artifacts/eas/jhDba2fHiueUkaChYeSu2s.apk
+          mkdir -p public
+          mv downloaded.apk App/
+
+      - name: Run Robot Framework tests
+        run: |
+          robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
+
+      - name: Archive test artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Robot Framework Reports
+          path: Reports
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: Robot Framework Results
+          path: Reports/output.xml
