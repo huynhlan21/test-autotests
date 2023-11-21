@@ -31,7 +31,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y android-sdk-platform-tools
           sudo apt install openjdk-11-jdk
-          sudo adb install /App
 
       - name: Set up environment variables
         run: |
@@ -71,6 +70,9 @@ jobs:
 
       - name: Connect to the emulator
         run: adb connect emulator-5554
+
+      - name: Check connected devices
+        run: adb devices
 
       - name: Run Robot Framework tests
         run: |
