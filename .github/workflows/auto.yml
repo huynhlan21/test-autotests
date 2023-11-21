@@ -83,7 +83,7 @@ jobs:
         run: |
           cat /etc/group | grep kvm || sudo groupadd -r kvm
           sudo sed -i '/KERNEL=="kvm", GROUP="kvm", MODE="0660"/!b;n;cKERNEL=="kvm", GROUP="kvm", MODE="0660"' /lib/udev/rules.d/50-udev-default.rules
-          sudo gpasswd -a ${{ runner.os }} kvm
+          sudo gpasswd -a "huynhlan21" kvm
 
       - name: Start the emulator
         run: |
