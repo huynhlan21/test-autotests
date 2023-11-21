@@ -79,8 +79,16 @@ jobs:
           export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$PATH"
         if: steps.list_avds.outputs.stdout != 'test_emulator'
 
+      - name: Set up KVM permissions
+        run: |
+          cat /etc/group | grep kvm || sudo groupadd -r kvm
+          sudo sed -i '/KERNEL=="kvm", GROUP="kvm", MODE="0660"/!b;n;cKERNEL=="kvm", GROUP="kvm", MODE="0660"' /lib/udev/rules.d/50-udev-default.rules
+          sudo gpasswd -a $USER kvm
+          sudo systemctl restart libvirtd
+
       - name: Start the emulator
-        run: $ANDROID_HOME/emulator/emulator -avd test_emulator
+        run: |
+          $ANDROID_HOME/emulator/emulator -avd test_emulator
 
       - name: Wait for the emulator to start
         run: |
