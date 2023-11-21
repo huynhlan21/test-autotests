@@ -65,7 +65,7 @@ jobs:
 
       - name: Create emulator
         run: |
-          echo "no" | avdmanager create avd --force --name test_emulator --abi google_apis/x86 --package 'system-images;android-29;google_apis;x86'
+          echo "no" | android create avd --force --name test_emulator --abi google_apis/x86 --package 'system-images;android-29;google_apis;x86'
         if: steps.list_avds.outputs.stdout != 'test_emulator'
 
       - name: Start the emulator
