@@ -31,13 +31,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y android-sdk-platform-tools
           sudo apt install openjdk-11-jdk
-          sdkmanager --install emulator
 
       - name: Set up environment variables
         run: |
           echo 'export ANDROID_HOME=~/Library/Android/sdk' >> $HOME/.bashrc
           echo 'export JAVA_HOME=/usr/lib/jvm/openjdk-11' >> $HOME/.bashrc
+          echo 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> $HOME/.bashrc
           source $HOME/.bashrc
+
+      - name: Install Android SDK components
+        run: sdkmanager --install "platform-tools" "emulator"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
