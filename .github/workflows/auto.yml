@@ -71,15 +71,11 @@ jobs:
       #     mkdir -p App
       #     mv application.apk App/
 
-      - name: List dir
-        run: |
-          cd $ANDROID_HOME/tools/bin
-          ls -R
-
       - name: Create emulator
         run: |
           echo "y" | $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-29;google_apis;x86"
           echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --name test_emulator --package 'system-images;android-29;google_apis;x86' --abi google_apis/x86 --device "pixel"
+          export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$PATH"
         if: steps.list_avds.outputs.stdout != 'test_emulator'
 
       - name: Start the emulator
