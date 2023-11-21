@@ -79,15 +79,21 @@ jobs:
           export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$PATH"
         if: steps.list_avds.outputs.stdout != 'test_emulator'
 
-      - name: Set up KVM permissions
-        run: |
-          cat /etc/group | grep kvm || sudo groupadd -r kvm
-          sudo sed -i '/KERNEL=="kvm", GROUP="kvm", MODE="0660"/!b;n;cKERNEL=="kvm", GROUP="kvm", MODE="0660"' /lib/udev/rules.d/50-udev-default.rules
+      # - name: Set up KVM permissions
+      #   run: |
+      #     cat /etc/group | grep kvm || sudo groupadd -r kvm
+      #     sudo sed -i '/KERNEL=="kvm", GROUP="kvm", MODE="0660"/!b;n;cKERNEL=="kvm", GROUP="kvm", MODE="0660"' /lib/udev/rules.d/50-udev-default.rules
 
-      - name: Check KVM permissions
-        run: |
-          cd /etc/group
-          ls -R
+      - name: Verify KVM Permissions
+        command: |
+          sed -i 's/^kvm:x:[0-9]\+$/&:huynhlan21/' /etc/group
+          groupadd -r kvm
+          gpasswd -a huynhlan21 kvm
+          sudo su - huynhlan21
+
+      - name: Configure KVM Permissions
+        command: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' >> /lib/udev/rules.d/50-udev-default.rules
 
       - name: Start the emulator
         run: |
