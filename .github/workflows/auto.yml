@@ -31,7 +31,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y android-sdk-platform-tools
           sudo apt install openjdk-11-jdk
-          sudo adb install
+          sudo adb install /App
 
       - name: Set up environment variables
         run: |
