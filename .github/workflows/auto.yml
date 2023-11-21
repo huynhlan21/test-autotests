@@ -73,7 +73,7 @@ jobs:
 
       - name: Create emulator
         run: |
-          $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-29;google_apis;x86" && echo "no" | sdkmanager create avd --force --name test_emulator --abi google_apis/x86 --package 'system-images;android-29;google_apis;x86'
+          $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-29;google_apis;x86" && echo "no" | $ANDROID_HOME/tools/bin/sdkmanager create avd --force --name test_emulator --abi google_apis/x86 --package 'system-images;android-29;google_apis;x86'
         if: steps.list_avds.outputs.stdout != 'test_emulator'
 
       - name: Start the emulator
