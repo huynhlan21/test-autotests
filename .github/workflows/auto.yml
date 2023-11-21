@@ -19,14 +19,26 @@ jobs:
         with:
           python-version: 3.9
 
+      - name: Create and activate venv
+        run: |
+          python3.9 -m venv venv
+          source venv/bin/activate
+
+      - name: Install frameworks and tools
+        run: |
+          npm i --location=global appium
+          appium driver install uiautomator2
+          apt install openjdk-11-jdk
+          adb install
+
+      - name: Set up environment variables
+        run: |
+          echo 'export ANDROID_HOME=~/Library/Android/sdk' >> $HOME/.bashrc
+          echo 'export JAVA_HOME=/usr/lib/jvm/openjdk-11' >> $HOME/.bashrc
+          source $HOME/.bashrc
+
       - name: Install dependencies
         run: pip install -r requirements.txt
-
-      - name: Set up Robot Framework
-        run: |
-          pip install robotframework
-          pip install robotframework-seleniumlibrary
-        # Add any additional Robot Framework dependencies here
 
       # - name: Checkout application code
       #   uses: actions/checkout@v4
@@ -40,6 +52,23 @@ jobs:
       #     wget -O application.apk https://expo.dev/artifacts/eas/jhDba2fHiueUkaChYeSu2s.apk
       #     mkdir -p App
       #     mv application.apk App/
+
+      - name: Start the emulator
+        run: emulator -avd your_emulator_name &
+
+      - name: Wait for the emulator to start
+        run: |
+          emulator_ready=false
+          while [ "$emulator_ready" != "true" ]; do
+            output=$(adb devices)
+            if echo "$output" | grep -q "emulator-"; then
+              emulator_ready=true
+            fi
+            sleep 2
+          done
+
+      - name: Connect to the emulator
+        run: adb connect emulator-5554
 
       - name: Run Robot Framework tests
         run: |
@@ -56,3 +85,8 @@ jobs:
         with:
           name: Robot Framework Results
           path: Reports/output.xml
+
+      - name: Deactivate and remove virtual environment
+        run: |
+          deactivate
+          rm -rf venv
