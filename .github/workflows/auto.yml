@@ -54,8 +54,17 @@ jobs:
       #     mkdir -p App
       #     mv application.apk App/
 
+      - name: List the emulator
+        run: emulator -list-avds
+        id: list_avds
+
+      - name: Create emulator
+        run: |
+          echo "no" | avdmanager create avd --force --name test_emulator --abi google_apis/x86 --package 'system-images;android-29;google_apis;x86'
+        if: steps.list_avds.outputs.stdout != 'test_emulator'
+
       - name: Start the emulator
-        run: emulator -avd your_emulator_name &
+        run: emulator -avd test_emulator
 
       - name: Wait for the emulator to start
         run: |
