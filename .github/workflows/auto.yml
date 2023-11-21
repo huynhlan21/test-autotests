@@ -84,6 +84,12 @@ jobs:
           cat /etc/group | grep kvm || sudo groupadd -r kvm
           sudo sed -i '/KERNEL=="kvm", GROUP="kvm", MODE="0660"/!b;n;cKERNEL=="kvm", GROUP="kvm", MODE="0660"' /lib/udev/rules.d/50-udev-default.rules
 
+      - name: Check KVM permissions
+        run: |
+          sudo apt-get install cpu-checker
+          egrep -c '(vmx|svm)' /proc/cpuinfo
+          sudo kvm-ok
+
       - name: Start the emulator
         run: |
           $ANDROID_HOME/emulator/emulator -avd test_emulator
