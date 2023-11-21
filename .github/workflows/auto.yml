@@ -79,7 +79,7 @@ jobs:
         if: steps.list_avds.outputs.stdout != 'test_emulator'
 
       - name: Start the emulator
-        run: emulator -avd test_emulator
+        run: $ANDROID_HOME/emulator/emulator -avd test_emulator
 
       - name: Wait for the emulator to start
         run: |
