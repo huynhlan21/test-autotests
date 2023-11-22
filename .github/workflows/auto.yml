@@ -80,7 +80,9 @@ jobs:
         run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
       - name: Verify adb installation
-        run: export PATH="$PATH:$ANDROID_HOME/platform-tools" && adb version
+        run: |
+          echo $ANDROID_HOME/platform-tools >> $GITHUB_PATH
+          adb version
 
       # - name: Install dependencies
       #   run: pip install -r requirements.txt
