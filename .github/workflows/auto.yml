@@ -31,19 +31,37 @@ jobs:
         with:
           python-version: 3.9
 
+      - name: Set up emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: google_apis
+          arch: x86
+          profile: pixel
+          cores: 2
+          avd-name: test
+          force-avd-creation: true
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          disable-spellchecker: false
+          disable-linux-hw-accel: auto
+          enable-hw-keyboard: false
+          channel: stable
+
       - name: Create and activate venv
         run: |
           python3.9 -m venv venv
           source venv/bin/activate
 
-      - name: Install frameworks and tools
-        run: |
-          npm i --location=global appium
-          appium driver install uiautomator2
-          sudo apt-get update
-          sudo apt-get install -y android-sdk-platform-tools
-          sudo apt install openjdk-11-jdk
-          sudo apt-get install -y libpulse0
+      # - name: Install frameworks and tools
+      #   run: |
+      #     npm i --location=global appium
+      #     appium driver install uiautomator2
+      #     sudo apt-get update
+      #     sudo apt-get install -y android-sdk-platform-tools
+      #     sudo apt install openjdk-11-jdk
+      #     sudo apt-get install -y libpulse0
 
       - name: Set up environment variables
         run: |
@@ -56,8 +74,8 @@ jobs:
       - name: Install Android SDK components
         run: $ANDROID_HOME/tools/bin/sdkmanager --install "platform-tools" "emulator"
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      # - name: Install dependencies
+      #   run: pip install -r requirements.txt
 
       # - name: Checkout application code
       #   uses: actions/checkout@v4
@@ -78,15 +96,6 @@ jobs:
       #     echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --name test_emulator --package 'system-images;android-29;google_apis;x86' --abi google_apis/x86 --device "pixel"
       #     export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$PATH"
       #   if: steps.list_avds.outputs.stdout != 'test_emulator'
-
-      - name: Set up emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          target: google_apis
-          profile: pixel
-          abi: x86
-          hardware-acceleration: true
 
       # - name: Set up KVM permissions
       #   run: |
