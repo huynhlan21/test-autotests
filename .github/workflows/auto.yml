@@ -58,10 +58,7 @@ jobs:
         run: $ANDROID_HOME/tools/bin/sdkmanager --install "platform-tools" "emulator"
 
       - name: Check echo path
-        run: |
-          find / -name adb 2>/dev/null
-          echo $PATH
-          adb version
+        run: adb version
 
       # - name: Install dependencies
       #   run: pip install -r requirements.txt
