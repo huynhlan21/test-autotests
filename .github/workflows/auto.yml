@@ -157,7 +157,7 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
-            cd App
+            cd ./App
             ls -R
             adb install -r application.apk
             adb shell am instrument -w -r -e debug false com.example.test/androidx.test.runner.AndroidJUnitRunner
@@ -215,14 +215,3 @@ jobs:
         run: |
           deactivate
           rm -rf venv
-
-  debug:
-    needs: test
-    runs-on: macos-latest
-    steps:
-      - name: Debug information
-        run: |
-          echo "Emulator setup success: ${{ needs.test.outputs.emulator.outputs.setup-success }}"
-          echo "Emulator setup output: ${{ needs.test.outputs.emulator.outputs.emulator-setup-output }}"
-          echo "Emulator logs:"
-          adb logcat -d
