@@ -76,6 +76,9 @@ jobs:
           echo 'export PATH=$PATH:$ANDROID_HOME/tools' >> $GITHUB_ENV
           echo 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> $GITHUB_ENV
 
+      - name: Update Android SDK
+        run: $ANDROID_HOME/tools/bin/sdkmanager --update
+
       - name: Accept Android licenses
         run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
@@ -121,11 +124,6 @@ jobs:
       #   run: |
       #     echo 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' >> /lib/udev/rules.d/50-udev-default.rules
 
-      # - name: Start the emulator
-      #   run: |
-      #     $ANDROID_HOME/emulator/emulator -list-avds
-      #     $ANDROID_HOME/emulator/emulator -avd test_emulator
-
       - name: Set up emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -136,7 +134,7 @@ jobs:
           cores: 2
           avd-name: test
           force-avd-creation: true
-          emulator-boot-timeout: 600
+          emulator-boot-timeout: 1200
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
           disable-spellchecker: false
