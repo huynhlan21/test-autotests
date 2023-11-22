@@ -121,6 +121,10 @@ jobs:
       #   run: |
       #     echo 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' >> /lib/udev/rules.d/50-udev-default.rules
 
+      - name: Start the emulator
+        run: |
+          $ANDROID_HOME/emulator/emulator -avd test_emulator
+
       - name: Set up emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -138,10 +142,6 @@ jobs:
           disable-linux-hw-accel: auto
           enable-hw-keyboard: false
           channel: stable
-
-      - name: Start the emulator
-        run: |
-          $ANDROID_HOME/emulator/emulator -avd test_emulator
 
       - name: Wait for the emulator to start
         run: |
