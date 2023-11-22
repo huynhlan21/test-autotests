@@ -31,24 +31,6 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Set up emulator
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          target: google_apis
-          arch: x86
-          profile: pixel
-          cores: 2
-          avd-name: test
-          force-avd-creation: true
-          emulator-boot-timeout: 600
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          disable-animations: true
-          disable-spellchecker: false
-          disable-linux-hw-accel: auto
-          enable-hw-keyboard: false
-          channel: stable
-
       - name: Create and activate venv
         run: |
           python3.9 -m venv venv
@@ -112,6 +94,24 @@ jobs:
       # - name: Configure KVM Permissions
       #   run: |
       #     echo 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' >> /lib/udev/rules.d/50-udev-default.rules
+
+      - name: Set up emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: google_apis
+          arch: x86
+          profile: pixel
+          cores: 2
+          avd-name: test
+          force-avd-creation: true
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          disable-spellchecker: false
+          disable-linux-hw-accel: auto
+          enable-hw-keyboard: false
+          channel: stable
 
       - name: Start the emulator
         run: |
