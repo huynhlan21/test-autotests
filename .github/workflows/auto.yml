@@ -86,7 +86,10 @@ jobs:
         run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
       - name: Verify adb installation
-        run: export PATH="$PATH:$ANDROID_HOME/platform-tools" && adb version && adb devices
+        run: |
+          export PATH="$PATH:$ANDROID_HOME/platform-tools" 
+          adb version
+          adb devices
 
       # - name: Install dependencies
       #   run: pip install -r requirements.txt
@@ -157,8 +160,8 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
-            cd ./App
-            ls -R
+            cd App
+            sleep 30
             adb install -r application.apk
             adb shell am instrument -w -r -e debug false com.example.test/androidx.test.runner.AndroidJUnitRunner
 
