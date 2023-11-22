@@ -36,6 +36,18 @@ jobs:
           python3.9 -m venv venv
           source venv/bin/activate
 
+      ###
+      - name: Verify KVM Permissions
+        run: |
+          sudo sed -i 's/^kvm:x:[0-9]\+$/&:huynhlan21/' /etc/group
+          sudo groupadd -r kvm
+          sudo gpasswd -a huynhlan21 kvm
+          sudo su - huynhlan21
+      ###
+      - name: Configure KVM Permissions
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' >> /lib/udev/rules.d/50-udev-default.rules
+
       - name: Install frameworks and tools
         run: |
           npm i --location=global appium
@@ -84,16 +96,16 @@ jobs:
       #     cat /etc/group | grep kvm || sudo groupadd -r kvm
       #     sudo sed -i '/KERNEL=="kvm", GROUP="kvm", MODE="0660"/!b;n;cKERNEL=="kvm", GROUP="kvm", MODE="0660"' /lib/udev/rules.d/50-udev-default.rules
 
-      - name: Verify KVM Permissions
-        run: |
-          sed -i 's/^kvm:x:[0-9]\+$/&:huynhlan21/' /etc/group
-          groupadd -r kvm
-          gpasswd -a huynhlan21 kvm
-          sudo su - huynhlan21
+      # - name: Verify KVM Permissions
+      #   run: |
+      #     sudo sed -i 's/^kvm:x:[0-9]\+$/&:huynhlan21/' /etc/group
+      #     sudo groupadd -r kvm
+      #     sudo gpasswd -a huynhlan21 kvm
+      #     sudo su - huynhlan21
 
-      - name: Configure KVM Permissions
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' >> /lib/udev/rules.d/50-udev-default.rules
+      # - name: Configure KVM Permissions
+      #   run: |
+      #     echo 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' >> /lib/udev/rules.d/50-udev-default.rules
 
       - name: Start the emulator
         run: |
