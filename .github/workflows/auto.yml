@@ -128,19 +128,19 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          target: google_apis
-          arch: x86
-          profile: pixel
-          cores: 2
-          avd-name: test
-          force-avd-creation: true
-          emulator-boot-timeout: 1200
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          disable-animations: true
-          disable-spellchecker: false
-          disable-linux-hw-accel: auto
-          enable-hw-keyboard: false
-          channel: stable
+          # target: google_apis
+          # arch: x86
+          # profile: pixel
+          # cores: 2
+          # avd-name: test
+          # force-avd-creation: true
+          # emulator-boot-timeout: 1200
+          # emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          # disable-animations: true
+          # disable-spellchecker: false
+          # disable-linux-hw-accel: auto
+          # enable-hw-keyboard: false
+          # channel: stable
           script: ./gradlew connectedCheck
 
       - name: Check emulator setup status
