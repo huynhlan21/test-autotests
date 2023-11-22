@@ -142,6 +142,13 @@ jobs:
           enable-hw-keyboard: false
           channel: stable
 
+      - name: Check emulator setup status
+        run: |
+          if [ ${{ steps.emulator.outputs.setup-success }} != 'true' ]; then
+            echo "Emulator setup failed. Skipping remaining steps."
+            exit 0
+          fi
+
       - name: Wait for the emulator to start
         run: |
           emulator_ready=false
@@ -174,6 +181,15 @@ jobs:
         with:
           name: Robot Framework Results
           path: Reports/output.xml
+
+      - name: Print emulator logs
+        run: adb logcat -d
+
+      - name: Terminate emulator
+        run: adb -s emulator-5554 emu kill
+
+      - name: Print emulator logs after termination
+        run: adb logcat -d
 
       - name: Deactivate and remove virtual environment
         run: |
