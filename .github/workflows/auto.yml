@@ -51,6 +51,7 @@ jobs:
           echo 'export JAVA_HOME=/usr/lib/jvm/openjdk-11' >> $HOME/.bashrc
           echo 'export PATH=$PATH:$ANDROID_HOME/tools/bin' >> $HOME/.bashrc
           echo 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> $HOME/.bashrc
+          echo 'export PATH=$PATH:/usr/local/lib/android/sdk/platform-tools' >> $HOME/.bashrc
           source $HOME/.bashrc
 
       - name: Install Android SDK components
