@@ -72,12 +72,21 @@ jobs:
       #     mkdir -p App
       #     mv application.apk App/
 
-      - name: Create emulator
-        run: |
-          echo "y" | $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-29;google_apis;x86"
-          echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --name test_emulator --package 'system-images;android-29;google_apis;x86' --abi google_apis/x86 --device "pixel"
-          export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$PATH"
-        if: steps.list_avds.outputs.stdout != 'test_emulator'
+      # - name: Create emulator
+      #   run: |
+      #     echo "y" | $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-29;google_apis;x86"
+      #     echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --name test_emulator --package 'system-images;android-29;google_apis;x86' --abi google_apis/x86 --device "pixel"
+      #     export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$PATH"
+      #   if: steps.list_avds.outputs.stdout != 'test_emulator'
+
+      - name: Set up emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: google_apis
+          profile: pixel
+          abi: x86
+          hardware-acceleration: true
 
       # - name: Set up KVM permissions
       #   run: |
