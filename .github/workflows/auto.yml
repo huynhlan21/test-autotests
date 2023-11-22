@@ -58,6 +58,7 @@ jobs:
 
       - name: Check echo path
         run: |
+          find ~/Library/Android/sdk -name adb
           echo $PATH
           adb version
 
