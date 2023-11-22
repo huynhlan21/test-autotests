@@ -141,9 +141,7 @@ jobs:
           disable-linux-hw-accel: auto
           enable-hw-keyboard: false
           channel: stable
-        env:
-          ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
-        VERBOSE_OUTPUT: "true"
+          script: ./gradlew connectedCheck
 
       - name: Check emulator setup status
         run: |
