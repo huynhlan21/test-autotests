@@ -57,7 +57,9 @@ jobs:
         run: $ANDROID_HOME/tools/bin/sdkmanager --install "platform-tools" "emulator"
 
       - name: Check echo path
-        run: echo $PATH
+        run: |
+          echo $PATH
+          adb version
 
       # - name: Install dependencies
       #   run: pip install -r requirements.txt
