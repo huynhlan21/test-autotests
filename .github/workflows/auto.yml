@@ -36,17 +36,6 @@ jobs:
           python3.9 -m venv venv
           source venv/bin/activate
 
-      ###
-      - name: Verify KVM Permissions
-        run: |
-          sudo sed -i 's/^kvm:x:[0-9]\+$/&:kmvuser/' /etc/group
-          sudo useradd -m -s /bin/bash customusername
-          sudo gpasswd -a kmvuser kvm
-          sudo su - kmvuser
-      - name: Configure KVM Permissions
-        run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' >> sudo tee -a /lib/udev/rules.d/50-udev-default.rules
-      ###
       - name: Install frameworks and tools
         run: |
           npm i --location=global appium
