@@ -141,8 +141,9 @@ jobs:
           disable-linux-hw-accel: auto
           enable-hw-keyboard: false
           channel: stable
-        env:
+        env: |
           ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
+          VERBOSE_OUTPUT=true
 
       - name: Check emulator setup status
         run: |
