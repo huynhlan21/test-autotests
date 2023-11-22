@@ -85,14 +85,14 @@ jobs:
       #     sudo sed -i '/KERNEL=="kvm", GROUP="kvm", MODE="0660"/!b;n;cKERNEL=="kvm", GROUP="kvm", MODE="0660"' /lib/udev/rules.d/50-udev-default.rules
 
       - name: Verify KVM Permissions
-        command: |
+        run: |
           sed -i 's/^kvm:x:[0-9]\+$/&:huynhlan21/' /etc/group
           groupadd -r kvm
           gpasswd -a huynhlan21 kvm
           sudo su - huynhlan21
 
       - name: Configure KVM Permissions
-        command: |
+        run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' >> /lib/udev/rules.d/50-udev-default.rules
 
       - name: Start the emulator
