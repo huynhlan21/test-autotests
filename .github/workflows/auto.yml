@@ -156,7 +156,10 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./gradlew connectedCheck
+          script: |
+            cd App
+            adb install -r application.apk
+            adb shell am instrument -w -r -e debug false com.example.test/androidx.test.runner.AndroidJUnitRunner
 
       - name: Check emulator setup status
         run: |
