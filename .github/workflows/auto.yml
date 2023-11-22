@@ -45,28 +45,42 @@ jobs:
       #     sudo apt install openjdk-11-jdk
       #     sudo apt-get install -y libpulse0
 
-      - name: Set up environment variables
-        run: |
-          echo 'export ANDROID_HOME=~/Library/Android/sdk' >> $HOME/.bashrc
-          echo 'export JAVA_HOME=/usr/lib/jvm/openjdk-11' >> $HOME/.bashrc
-          echo 'export PATH=$PATH:$ANDROID_HOME/tools/bin' >> $HOME/.bashrc
-          echo 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> $HOME/.bashrc
-          echo 'export PATH=$PATH:/usr/local/lib/android/sdk/platform-tools' >> $HOME/.bashrc
-          source $HOME/.bashrc
+      # - name: Set up environment variables
+      #   run: |
+      #     echo 'export ANDROID_HOME=~/Library/Android/sdk' >> $HOME/.bashrc
+      #     echo 'export JAVA_HOME=/usr/lib/jvm/openjdk-11' >> $HOME/.bashrc
+      #     echo 'export PATH=$PATH:$ANDROID_HOME/tools/bin' >> $HOME/.bashrc
+      #     echo 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> $HOME/.bashrc
+      #     echo 'export PATH=$PATH:/usr/local/lib/android/sdk/platform-tools' >> $HOME/.bashrc
+      #     source $HOME/.bashrc
 
-      - name: Install Android SDK components
-        run: $ANDROID_HOME/tools/bin/sdkmanager --install "platform-tools" "emulator"
+      # - name: Install Android SDK components
+      #   run: $ANDROID_HOME/tools/bin/sdkmanager --install "platform-tools" "emulator"
 
-      - name: Find adb location
-        run: find / -name adb 2>/dev/null
-        id: adb-location
+      # - name: Find adb location
+      #   run: find / -name adb 2>/dev/null
+      #   id: adb-location
 
-      - name: Add adb to PATH
-        run: |
-          echo "export PATH=$PATH:${{ steps.adb-location.outputs.stdout }}" >> $GITHUB_ENV
+      # - name: Add adb to PATH
+      #   run: |
+      #     echo "export PATH=$PATH:${{ steps.adb-location.outputs.stdout }}" >> $GITHUB_ENV
 
-      - name: adb version
-        run: adb version
+      # - name: adb version
+      #   run: adb version
+
+        - name: Set up Android SDK
+          run: |
+            curl -o sdk-tools-linux.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
+            unzip -q sdk-tools-linux.zip -d android-sdk
+            echo 'export ANDROID_HOME=$PWD/android-sdk' >> $GITHUB_ENV
+            echo 'export PATH=$PATH:$ANDROID_HOME/tools' >> $GITHUB_ENV
+            echo 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> $GITHUB_ENV
+
+        - name: Accept Android licenses
+          run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+
+        - name: Verify adb installation
+          run: adb version
 
       # - name: Install dependencies
       #   run: pip install -r requirements.txt
