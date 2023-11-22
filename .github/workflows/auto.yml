@@ -141,6 +141,8 @@ jobs:
           disable-linux-hw-accel: auto
           enable-hw-keyboard: false
           channel: stable
+        env:
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
 
       - name: Check emulator setup status
         run: |
@@ -195,3 +197,14 @@ jobs:
         run: |
           deactivate
           rm -rf venv
+
+  debug:
+  needs: test
+  runs-on: macos-latest
+  steps:
+    - name: Debug information
+      run: |
+        echo "Emulator setup success: ${{ needs.test.outputs.emulator.outputs.setup-success }}"
+        echo "Emulator setup output: ${{ needs.test.outputs.emulator.outputs.emulator-setup-output }}"
+        echo "Emulator logs:"
+        adb logcat -d
