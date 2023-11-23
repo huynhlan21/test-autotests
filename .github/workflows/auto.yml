@@ -134,7 +134,7 @@ jobs:
             ~/.android/adb*
           key: avd-29
 
-      - name: create AVD and generate snapshot for caching
+      - name: Create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -159,23 +159,26 @@ jobs:
       #       adb install -r application.apk
       #       adb shell am instrument -w -r -e debug false com.example.test/androidx.test.runner.AndroidJUnitRunner
 
-      - name: Check emulator setup status
-        run: |
-          if [ ${{ steps.emulator.outputs.setup-success }} != 'true' ]; then
-            echo "Emulator setup failed. Skipping remaining steps."
-            exit 0
-          fi
+      # - name: Check emulator setup status
+      #   run: |
+      #     if [ ${{ steps.emulator.outputs.setup-success }} != 'true' ]; then
+      #       echo "Emulator setup failed. Skipping remaining steps."
+      #       exit 0
+      #     fi
 
-      - name: Wait for the emulator to start
-        run: |
-          emulator_ready=false
-          while [ "$emulator_ready" != "true" ]; do
-            output=$(adb devices)
-            if echo "$output" | grep -q "emulator-"; then
-              emulator_ready=true
-            fi
-            sleep 2
-          done
+      # - name: Wait for the emulator to start
+      #   run: |
+      #     emulator_ready=false
+      #     while [ "$emulator_ready" != "true" ]; do
+      #       output=$(adb devices)
+      #       if echo "$output" | grep -q "emulator-"; then
+      #         emulator_ready=true
+      #       fi
+      #       sleep 2
+      #     done
+
+      - name: Check connected devices
+        run: adb devices
 
       - name: Connect to the emulator
         run: adb connect emulator-5554
