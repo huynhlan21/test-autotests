@@ -68,9 +68,6 @@ jobs:
           mkdir -p App
           mv application.apk App/
 
-      # - name: Gradle cache
-      #   uses: gradle/gradle-build-action@v2
-
       - name: AVD cache
         uses: actions/cache@v3
         id: avd-cache
@@ -117,7 +114,6 @@ jobs:
       - name: Delete APK file
         run: rm -f App/application.apk
 
-      - name: Deactivate and remove virtual environment
+      - name: Remove virtual environment
         run: |
-          deactivate
           rm -rf venv
