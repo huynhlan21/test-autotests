@@ -77,7 +77,7 @@ jobs:
           echo 'export ANDROID_HOME=$PWD/android-sdk' >> $GITHUB_ENV
           echo 'export PATH=$PATH:$ANDROID_HOME/tools' >> $GITHUB_ENV
           echo 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> $GITHUB_ENV
-          echo 'export JAVA_HOME=~/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.9-9/x64/Contents/Home/bin/java' >> $GITHUB_ENV
+          echo 'export JAVA_HOME=~/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.9-9/x64/Contents/Home' >> $GITHUB_ENV
           echo 'export PATH=$JAVA_HOME/bin:$PATH' >> $GITHUB_ENV
           source $HOME/.bashrc
 
