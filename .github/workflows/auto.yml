@@ -30,6 +30,9 @@ jobs:
           python3.9 -m venv venv
           source venv/bin/activate
 
+      - name: check java
+        run: which java
+
       - name: Install frameworks and tools
         run: |
           npm i --location=global appium
