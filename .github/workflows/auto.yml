@@ -46,35 +46,11 @@ jobs:
           echo 'export PATH=$PATH:/usr/local/lib/android/sdk/platform-tools' >> $HOME/.bashrc
           source $HOME/.bashrc
 
-      # - name: Install Android SDK components
-      #   run: $ANDROID_HOME/tools/bin/sdkmanager --install "platform-tools" "emulator"
-
-      # - name: Add adb to PATH
-      #   run: |
-      #     echo "export PATH=$PATH:${{ steps.adb-location.outputs.stdout }}" >> $GITHUB_ENV
-
-      # - name: Set up environment variables
-      #   run: |
-      #     curl -o sdk-tools-linux.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
-      #     unzip -q sdk-tools-linux.zip -d android-sdk
-      #     echo 'export ANDROID_HOME=$PWD/android-sdk' >> $GITHUB_ENV
-      #     echo 'export PATH=$PATH:$ANDROID_HOME/tools' >> $GITHUB_ENV
-      #     echo 'export PATH=$PATH:$ANDROID_HOME/platform-tools' >> $GITHUB_ENV
-      #     echo 'export JAVA_HOME=~/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.9-9/x64/Contents/Home' >> $GITHUB_ENV
-      #     echo 'export PATH=$JAVA_HOME/bin:$PATH' >> $GITHUB_ENV
-      #     source $HOME/.bashrc
-
       - name: Update Android SDK
         run: $ANDROID_HOME/tools/bin/sdkmanager --update
 
       - name: Accept Android licenses
         run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
-
-      # - name: Verify adb installation
-      #   run: |
-      #     export PATH="$PATH:$ANDROID_HOME/platform-tools"
-      #     adb version
-      #     adb devices
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -92,29 +68,6 @@ jobs:
       #     mkdir -p App
       #     mv application.apk App/
 
-      # - name: Create emulator
-      #   run: |
-      #     echo "y" | $ANDROID_HOME/tools/bin/sdkmanager "system-images;android-29;google_apis;x86"
-      #     echo "no" | $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd --name test_emulator --package 'system-images;android-29;google_apis;x86' --abi google_apis/x86 --device "pixel"
-      #     export PATH="$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$PATH"
-      #   if: steps.list_avds.outputs.stdout != 'test_emulator'
-
-      # - name: Set up KVM permissions
-      #   run: |
-      #     cat /etc/group | grep kvm || sudo groupadd -r kvm
-      #     sudo sed -i '/KERNEL=="kvm", GROUP="kvm", MODE="0660"/!b;n;cKERNEL=="kvm", GROUP="kvm", MODE="0660"' /lib/udev/rules.d/50-udev-default.rules
-
-      # - name: Verify KVM Permissions
-      #   run: |
-      #     sudo sed -i 's/^kvm:x:[0-9]\+$/&:huynhlan21/' /etc/group
-      #     sudo groupadd -r kvm
-      #     sudo gpasswd -a huynhlan21 kvm
-      #     sudo su - huynhlan21
-
-      # - name: Configure KVM Permissions
-      #   run: |
-      #     echo 'KERNEL=="kvm", GROUP="kvm", MODE="0660"' >> /lib/udev/rules.d/50-udev-default.rules
-
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
 
@@ -127,6 +80,9 @@ jobs:
             ~/.android/adb*
           key: avd-29
 
+      - name: Start Appium Server
+        run: appium &
+
       - name: Create AVD and run tests
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
@@ -137,62 +93,8 @@ jobs:
           disable-animations: false
           script: |
             adb devices
-            ls {.,App}
-            sleep 30
             adb install -r App/application.apk
             robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
-
-      # - name: Create AVD & Run tests
-      #   uses: reactivecircus/android-emulator-runner@v2
-      #   with:
-      #     api-level: 29
-      #     force-avd-creation: false
-      #     emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-      #     disable-animations: true
-      #     script: |
-      #       adb devices
-      #       ls {.,App}
-      #       sleep 30
-      #       adb install -r App/application.apk
-      #       robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
-
-      # - name: Check emulator setup status
-      #   run: |
-      #     if [ ${{ steps.emulator.outputs.setup-success }} != 'true' ]; then
-      #       echo "Emulator setup failed. Skipping remaining steps."
-      #       exit 0
-      #     fi
-
-      # - name: Wait for the emulator to start
-      #   run: |
-      #     emulator_ready=false
-      #     while [ "$emulator_ready" != "true" ]; do
-      #       output=$(adb devices)
-      #       if echo "$output" | grep -q "emulator-"; then
-      #         emulator_ready=true
-      #       fi
-      #       sleep 2
-      #     done
-
-      # - name: Check connected devices
-      #   run: adb devices
-
-      # - name: Connect to the emulator
-      #   run: adb connect localhost:5554
-
-      # - name: Check connected devices
-      #   run: adb devices
-
-      # - name: Install the application
-      #   run: |
-      #     ls
-      #     cd App
-      #     ls
-      #     adb install -r application.apk
-
-      # - name: Run Robot Framework tests
-      #   run: |
-      #     robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive test artifacts
         uses: actions/upload-artifact@v3
