@@ -108,14 +108,14 @@ jobs:
           name: Robot Framework Results
           path: Reports/output.xml
 
-      - name: Print emulator logs
-        run: adb logcat -d
+      - name: Stop Appium Server
+        run: pkill -f appium
+
+      - name: Check emulator
+        run: adb devices
 
       - name: Terminate emulator
         run: adb -s emulator-5554 emu kill
-
-      - name: Print emulator logs after termination
-        run: adb logcat -d
 
       - name: Deactivate and remove virtual environment
         run: |
