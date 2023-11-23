@@ -47,10 +47,10 @@ jobs:
           source $HOME/.bashrc
 
       - name: Update Android SDK
-        run: $ANDROID_HOME/tools/bin/sdkmanager --update
+        run: source $HOME/.bashrc && $ANDROID_HOME/tools/bin/sdkmanager --update
 
       - name: Accept Android licenses
-        run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+        run: yes | source $HOME/.bashrc && $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -62,11 +62,11 @@ jobs:
       #     ref: build
       #     path: App
 
-      # - name: Download APK file
-      #   run: |
-      #     wget -O application.apk https://expo.dev/artifacts/eas/jhDba2fHiueUkaChYeSu2s.apk
-      #     mkdir -p App
-      #     mv application.apk App/
+      - name: Download APK file
+        run: |
+          wget -O application.apk ${{ env.APK_URL }}
+          mkdir -p App
+          mv application.apk App/
 
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
@@ -111,11 +111,15 @@ jobs:
       - name: Stop Appium Server
         run: pkill -f appium
 
-      - name: Check emulator
-        run: adb devices
+      - name: Clear Appium logs
+        run: rm -rf /tmp/appium*
 
-      - name: Terminate emulator
-        run: adb -s emulator-5554 emu kill
+      - name: Delete APK file
+        run: rm -f App/application.apk
+
+      - name: Clean Gradle cache
+        run: ./gradlew clean
+        working-directory: App
 
       - name: Deactivate and remove virtual environment
         run: |
