@@ -20,9 +20,6 @@ jobs:
       # - name: Install and Run Appium Server
       #   uses: moatazeldebsy/appium-server-gitHub-action@V1.0.4
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -39,6 +36,8 @@ jobs:
           appium driver install uiautomator2
           sudo apt-get update
           sudo apt install openjdk-20-jdk
+          sudo apt-get install -y android-sdk-platform-tools
+          sudo apt-get install -y libpulse0
 
       - name: Set up environment variables
         run: |
