@@ -144,7 +144,7 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
-      - name: Run tests
+      - name: Create AVD & Run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
@@ -152,11 +152,9 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
-            ls
-            cd ./App
-            ls
+            ls {.,App}
             sleep 30
-            adb install -r application.apk
+            adb install -r App/application.apk
             robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       # - name: Check emulator setup status
