@@ -144,20 +144,20 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
-      # - name: run tests
-      #   uses: reactivecircus/android-emulator-runner@v2
-      #   with:
-      #     api-level: 29
-      #     force-avd-creation: false
-      #     emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-      #     disable-animations: true
-      #     script: |
-      #       ls
-      #       cd ./App
-      #       ls
-      #       sleep 30
-      #       adb install -r application.apk
-      #       adb shell am instrument -w -r -e debug false com.example.test/androidx.test.runner.AndroidJUnitRunner
+      - name: Run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: |
+            ls
+            cd ./App
+            ls
+            sleep 30
+            adb install -r application.apk
+            robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       # - name: Check emulator setup status
       #   run: |
@@ -177,25 +177,25 @@ jobs:
       #       sleep 2
       #     done
 
-      - name: Check connected devices
-        run: adb devices
+      # - name: Check connected devices
+      #   run: adb devices
 
-      - name: Connect to the emulator
-        run: adb connect emulator-5554
+      # - name: Connect to the emulator
+      #   run: adb connect localhost:5554
 
-      - name: Check connected devices
-        run: adb devices
+      # - name: Check connected devices
+      #   run: adb devices
 
-      - name: Install the application
-        run: |
-          ls
-          cd App
-          ls
-          adb install -r application.apk
+      # - name: Install the application
+      #   run: |
+      #     ls
+      #     cd App
+      #     ls
+      #     adb install -r application.apk
 
-      - name: Run Robot Framework tests
-        run: |
-          robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
+      # - name: Run Robot Framework tests
+      #   run: |
+      #     robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive test artifacts
         uses: actions/upload-artifact@v3
