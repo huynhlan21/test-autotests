@@ -95,8 +95,10 @@ jobs:
       - name: Stop Appium Server
         run: pkill -f appium
 
-      - name: Clear Logs and Delete Files
+      - name: Clean up
         run: |
           rm -rf /tmp/appium*
+          rm -rf ~/.android/avd/*
+          rm -rf ~/.android/adb*
           rm -f App/application.apk
           rm -rf venv
