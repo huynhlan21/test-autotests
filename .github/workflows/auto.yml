@@ -14,11 +14,12 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
       - name: Checkout automation code
         uses: actions/checkout@v4
-
-      - name: Install and Run Appium Server
-        uses: moatazeldebsy/appium-server-gitHub-action@V1.0.4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -34,9 +35,8 @@ jobs:
         run: |
           npm i --location=global appium
           appium driver install uiautomator2
-          sudo apt-get update
-          sudo apt-get install -y android-sdk-platform-tools
-          sudo apt-get install -y libpulse0
+          brew update
+          brew install android-platform-tools
 
       - name: Set up environment variables
         run: |
