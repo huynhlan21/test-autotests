@@ -184,7 +184,11 @@ jobs:
         run: adb devices
 
       - name: Install the application
-        run: adb install -r application.apk
+        run: |
+          ls
+          cd App
+          ls
+          adb install -r application.apk
 
       - name: Run Robot Framework tests
         run: |
