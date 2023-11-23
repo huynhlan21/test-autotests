@@ -26,8 +26,8 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
-      # - name: Setup Android SDK
-      #   uses: android-actions/setup-android@v3
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -43,9 +43,9 @@ jobs:
         run: |
           npm i --location=global appium
           appium driver install uiautomator2
-          sudo apt-get update
-          sudo apt-get install -y android-sdk-platform-tools
-          sudo apt-get install -y libpulse0
+          # sudo apt-get update
+          # sudo apt-get install -y android-sdk-platform-tools
+          # sudo apt-get install -y libpulse0
 
       # - name: Set up environment variables
       #   run: |
