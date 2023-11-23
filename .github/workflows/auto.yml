@@ -92,12 +92,6 @@ jobs:
           name: Robot Framework Reports
           path: Reports
 
-      - name: Upload test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: Robot Framework Results
-          path: Reports/output.xml
-
       - name: Stop Appium Server
         run: pkill -f appium
 
