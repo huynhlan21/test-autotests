@@ -55,13 +55,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # - name: Checkout application code
-      #   uses: actions/checkout@v4
-      #   with:
-      #     repository: huynhlan21/test
-      #     ref: build
-      #     path: App
-
       - name: Download APK file
         run: |
           wget -O application.apk ${{ vars.APK_URL }}
@@ -108,12 +101,8 @@ jobs:
       - name: Stop Appium Server
         run: pkill -f appium
 
-      - name: Clear Appium logs
-        run: rm -rf /tmp/appium*
-
-      - name: Delete APK file
-        run: rm -f App/application.apk
-
-      - name: Remove virtual environment
+      - name: Clear Logs and Delete Files
         run: |
+          rm -rf /tmp/appium*
+          rm -f App/application.apk
           rm -rf venv
