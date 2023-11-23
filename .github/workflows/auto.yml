@@ -34,6 +34,7 @@ jobs:
         run: |
           npm i --location=global appium
           appium driver install uiautomator2
+          sudo apt-get install -y apt
           sudo apt-get update
           sudo apt install openjdk-20-jdk
           sudo apt-get install -y android-sdk-platform-tools
