@@ -49,16 +49,9 @@ jobs:
       # - name: Install Android SDK components
       #   run: $ANDROID_HOME/tools/bin/sdkmanager --install "platform-tools" "emulator"
 
-      # - name: Find adb location
-      #   run: find / -name adb 2>/dev/null
-      #   id: adb-location
-
       # - name: Add adb to PATH
       #   run: |
       #     echo "export PATH=$PATH:${{ steps.adb-location.outputs.stdout }}" >> $GITHUB_ENV
-
-      # - name: adb version
-      #   run: adb version
 
       # - name: Set up environment variables
       #   run: |
@@ -77,14 +70,14 @@ jobs:
       - name: Accept Android licenses
         run: yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
-      - name: Verify adb installation
-        run: |
-          export PATH="$PATH:$ANDROID_HOME/platform-tools" 
-          adb version
-          adb devices
+      # - name: Verify adb installation
+      #   run: |
+      #     export PATH="$PATH:$ANDROID_HOME/platform-tools"
+      #     adb version
+      #     adb devices
 
-      # - name: Install dependencies
-      #   run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
       # - name: Checkout application code
       #   uses: actions/checkout@v4
@@ -134,28 +127,34 @@ jobs:
             ~/.android/adb*
           key: avd-29
 
-      # - name: Create AVD and generate snapshot for caching
-      #   if: steps.avd-cache.outputs.cache-hit != 'true'
-      #   uses: reactivecircus/android-emulator-runner@v2
-      #   with:
-      #     api-level: 29
-      #     force-avd-creation: false
-      #     emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-      #     disable-animations: false
-      #     script: echo "Generated AVD snapshot for caching."
-
-      - name: Create AVD & Run tests
+      - name: Create AVD and run tests
+        if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
           script: |
+            adb devices
             ls {.,App}
             sleep 30
             adb install -r App/application.apk
             robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
+
+      # - name: Create AVD & Run tests
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: 29
+      #     force-avd-creation: false
+      #     emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+      #     disable-animations: true
+      #     script: |
+      #       adb devices
+      #       ls {.,App}
+      #       sleep 30
+      #       adb install -r App/application.apk
+      #       robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       # - name: Check emulator setup status
       #   run: |
