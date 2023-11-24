@@ -58,8 +58,13 @@ jobs:
           tar -xzf ios_build.tar.gz
           ls
 
+      - name: Start Appium Server
+        run: appium &
+
       - name: Run on iOS Simulator
-        run: xcrun simctl install booted App/test.app && xcrun simctl launch booted ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+        run: |
+          xcrun simctl install booted App/test.app && xcrun simctl launch booted ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       # - name: Install Apple Certificate and Provisioning Profile
       #   run: |
