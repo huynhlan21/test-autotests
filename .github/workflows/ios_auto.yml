@@ -44,13 +44,19 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
+      - name: Install Dependencies for iOS
+        run: |
+          gem install bundler
+          bundle install
+
       - name: Download and Extract iOS Build
         run: |
           wget -O ios_build.tar.gz ${{ vars.IOS_URL }}
           mkdir -p App
           mv ios_build.tar.gz App/
-          tar -xzf App/ios_build.tar.gz
-          ls {.,App}
+          cd App
+          tar -xzf ios_build.tar.gz
+          ls
 
       - name: Run on iOS Simulator
         run: xcrun simctl install booted App/test.app && xcrun simctl launch booted ${{ vars.IOS_BUNDLE_IDENTIFIER }}
@@ -66,13 +72,8 @@ jobs:
       #     mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
       #     echo "${{ secrets.PROVISIONING_PROFILE }}" > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
 
-      - name: Install Dependencies for iOS
-        run: |
-          gem install bundler
-          bundle install
-
-      - name: Start Appium Server
-        run: appium &
+      # - name: Start Appium Server
+      #   run: appium &
 
       - name: Archive Test Artifacts
         uses: actions/upload-artifact@v3
