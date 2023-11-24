@@ -56,10 +56,24 @@ jobs:
           mv ios_build.tar.gz App/
           cd App
           tar -xzf ios_build.tar.gz
-          ls
 
       - name: Start Appium Server
         run: appium &
+
+      - name: Enable iOS Simulator
+        run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+
+      - name: Boot iOS Simulator
+        run: xcrun instruments -w "iPhone 14"
+
+      - name: Check availability
+        run: |
+          echo 'Check the availability of test.app'
+          ls {.,App}
+          echo 'Check the availability of the simulator'
+          xcrun simctl list devices
+          echo 'Check the simulator's boot status'
+          xcrun simctl boot
 
       - name: Run on iOS Simulator
         run: |
