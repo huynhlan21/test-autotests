@@ -3,14 +3,14 @@ name: Automation Build and Release
 on:
   push:
     branches:
-      - buid_yml
+      - master
   pull_request:
     branches:
       - master
 
 jobs:
   test:
-    name: Automation Test
+    name: Android Automation Test
     runs-on: macos-latest
 
     steps:

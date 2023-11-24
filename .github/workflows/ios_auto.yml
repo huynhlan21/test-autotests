@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: Automation Test
+    name: iOS Automation Test
     runs-on: macos-latest
 
     steps:
@@ -44,10 +44,10 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      - name: Install Dependencies for iOS
-        run: |
-          gem install bundler
-          bundle install
+      # - name: Install Dependencies for iOS
+      #   run: |
+      #     gem install bundler
+      #     bundle install
 
       - name: Download and Extract iOS Build
         run: |
