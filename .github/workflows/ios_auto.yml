@@ -1,0 +1,90 @@
+name: Automation Build and Release
+
+on:
+  push:
+    branches:
+      - buid_yml
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Automation Test
+    runs-on: macos-latest
+
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Set up iOS simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: "iPhone 14"
+
+      - name: Checkout Automation Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Create and Activate Venv
+        run: |
+          python3.9 -m venv venv
+          source venv/bin/activate
+
+      - name: Install frameworks and tools
+        run: |
+          npm i --location=global appium
+          appium driver install uiautomator2
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download and Extract iOS Build
+        run: |
+          wget -O ios_build.tar.gz ${{ vars.IOS_URL }}
+          mkdir -p App
+          mv ios_build.tar.gz App/
+          tar -xzf App/ios_build.tar.gz
+          ls {.,App}
+
+      - name: Run on iOS Simulator
+        run: xcrun simctl install booted App/test.app && xcrun simctl launch booted ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+
+      # - name: Install Apple Certificate and Provisioning Profile
+      #   run: |
+      #     security create-keychain -p mysecretpassword ios-build.keychain
+      #     security default-keychain -s ios-build.keychain
+      #     security unlock-keychain -p mysecretpassword ios-build.keychain
+      #     security set-keychain-settings -t 3600 -l ~/Library/Keychains/ios-build.keychain
+      #     security import ./Certificates.p12 -k ~/Library/Keychains/ios-build.keychain -P ${{ secrets.CERTIFICATE_PASSWORD }} -T /usr/bin/codesign
+      #     security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword ios-build.keychain
+      #     mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
+      #     echo "${{ secrets.PROVISIONING_PROFILE }}" > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
+
+      - name: Install Dependencies for iOS
+        run: |
+          gem install bundler
+          bundle install
+
+      - name: Start Appium Server
+        run: appium &
+
+      - name: Archive Test Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: iOS Automation Reports
+          path: Reports
+
+      - name: Stop Appium Server
+        run: pkill -f appium
+
+      - name: Clean up
+        run: |
+          rm -rf /tmp/appium*
+          rm -f App/ios_build.tar.gz
+          rm -rf venv
