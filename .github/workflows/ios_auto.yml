@@ -37,7 +37,7 @@ jobs:
       - name: Install frameworks and tools
         run: |
           npm i --location=global appium
-          appium driver install uiautomator2
+          appium driver install xcuitest
 
       - name: CHECK APPIUM DRIVER
         run: appium driver list --installed
