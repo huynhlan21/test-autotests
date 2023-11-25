@@ -56,11 +56,6 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      # - name: Install Dependencies for iOS
-      #   run: |
-      #     gem install bundler
-      #     bundle install
-
       - name: Download and Extract iOS Build
         run: |
           wget -O ios_build.tar.gz ${{ vars.IOS_URL }}
@@ -72,36 +67,10 @@ jobs:
       - name: Start Appium Server
         run: appium &
 
-      # - name: Enable iOS Simulator
-      #   run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
-
-      - name: Check availability
-        run: |
-          echo 'Check the availability of test.app'
-          ls {.,App}
-          echo 'Check the availability of the simulator'
-          xcrun simctl list devices
-          echo 'Check the simulator's boot status'
-          xcrun simctl boot
-
       - name: Run on iOS Simulator
         run: |
           xcrun simctl install booted App/test.app && xcrun simctl launch booted ${{ vars.IOS_BUNDLE_IDENTIFIER }}
           robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
-
-      # - name: Install Apple Certificate and Provisioning Profile
-      #   run: |
-      #     security create-keychain -p mysecretpassword ios-build.keychain
-      #     security default-keychain -s ios-build.keychain
-      #     security unlock-keychain -p mysecretpassword ios-build.keychain
-      #     security set-keychain-settings -t 3600 -l ~/Library/Keychains/ios-build.keychain
-      #     security import ./Certificates.p12 -k ~/Library/Keychains/ios-build.keychain -P ${{ secrets.CERTIFICATE_PASSWORD }} -T /usr/bin/codesign
-      #     security set-key-partition-list -S apple-tool:,apple: -s -k mysecretpassword ios-build.keychain
-      #     mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles/
-      #     echo "${{ secrets.PROVISIONING_PROFILE }}" > ~/Library/MobileDevice/Provisioning\ Profiles/profile.mobileprovision
-
-      # - name: Start Appium Server
-      #   run: appium &
 
       - name: Archive Test Artifacts
         uses: actions/upload-artifact@v3
