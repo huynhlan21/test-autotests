@@ -19,14 +19,13 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
 
       - name: Set up Xcode
-        run: |
-          sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+        run: xcode-select --install
 
       - name: Verify Xcode installation
         run: xcodebuild -version -sdk
 
-      # - name: Verify instruments utility
-      #   run: which instruments
+      - name: Verify instruments utility
+        run: which instruments
 
       - name: Set up iOS simulator
         uses: futureware-tech/simulator-action@v3
