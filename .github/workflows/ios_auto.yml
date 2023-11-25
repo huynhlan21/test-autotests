@@ -29,6 +29,12 @@ jobs:
         with:
           model: "${{ vars.IOS_DEVICE }}"
 
+      - name: List available iOS simulator devices
+        run: xcrun simctl list devices
+
+      - name: Check iOS simulator status
+        run: xcrun simctl list | grep -A 5 "${{ vars.IOS_DEVICE }}"
+
       - name: Checkout Automation Code
         uses: actions/checkout@v4
 
@@ -79,4 +85,5 @@ jobs:
         run: |
           rm -rf /tmp/appium*
           rm -f App/ios_build.tar.gz
+          rm -f App/test.app
           rm -rf venv
