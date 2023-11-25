@@ -3,11 +3,13 @@ Library    AppiumLibrary
 
 *** Variables ***
 ${URL}              http://127.0.0.1:4723
-${PLATFORM_NAME}    iOS
-${DEVICE_NAME}      iPhone 14
-${APP_PACKAGE}      com.lanhuynh.test
-${APP_ACTIVITY}     com.lanhuynh.test.MainActivity
-${AUTOMATION_NAME}  XCUITest
+${IOS_PLATFORM}     iOS
+${IOS_UI_NAME}      XCUITest
+${BUNDLE_ID}        com.lanhuynh.test
+
+${IPHONE_VERSION}   16.2
+${IPHONE_DEVICE}    iPhone 14
+${IPHONE_UDID}      FCAFCAA7-300F-4823-B6A9-04C5739984A5
 
 ${TabOne_Screen}    	//XCUIElementTypeStaticText[@name="app/(tabs)/index.tsx"]
 ${TabTwo_Button}        //XCUIElementTypeStaticText[@name="Tab Two"]

@@ -39,9 +39,6 @@ jobs:
           npm i --location=global appium
           appium driver install xcuitest
 
-      - name: CHECK APPIUM DRIVER
-        run: appium driver list --installed
-
       - name: Checkout Automation Code
         uses: actions/checkout@v4
 

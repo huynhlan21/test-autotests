@@ -6,11 +6,12 @@ Resource        ../Locators/CommonLocators.robot
 *** Keywords ***
 Open Application On The Device
     Open Application    ${URL}
-    ...     platformName=${PLATFORM_NAME}
-    ...     deviceName=${DEVICE_NAME}}
-    ...     appPackage=${APP_PACKAGE}
-    ...     appActivity=${APP_ACTIVITY}
-    ...     automationName=${AUTOMATION_NAME}
+    ...     platformName=${IOS_PLATFORM}
+    ...     deviceName=${IPHONE_DEVICE}
+    ...     udid=${IPHONE_UDID}
+    ...     bundleId=${BUNDLE_ID}
+    ...     platformVersion=${IPHONE_VERSION}
+    ...     automationName=${IOS_UI_NAME}
 
 Verify Tab One Screen Is Displayed
     wait until page contains element    ${TabOne_Screen}
