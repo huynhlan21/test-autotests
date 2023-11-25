@@ -26,11 +26,7 @@ jobs:
 
       - name: Verify instruments utility
         run: |
-          cd /Applications/Xcode.app/Contents/Developer/usr/bin
-          ls
-          echo $PATH
-          xcode-select --print-path
-          which instruments
+          /Applications/Xcode.app/Contents/Developer/usr/bin/instruments
 
       - name: Set up iOS simulator
         uses: futureware-tech/simulator-action@v3
