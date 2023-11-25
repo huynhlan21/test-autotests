@@ -11,5 +11,5 @@ ${IPHONE_VERSION}   16.2
 ${IPHONE_DEVICE}    iPhone 14
 
 ${TabOne_Screen}    	//XCUIElementTypeStaticText[@name="app/(tabs)/index.tsx"]
-${TabTwo_Button}        //XCUIElementTypeStaticText[@name="Tab Two"]
+${TabTwo_Button}        //XCUIElementTypeOther[@name="Tab Two"]
 ${TabTwo_Screen}        //XCUIElementTypeStaticText[@name="app/(tabs)/two.tsx"]
