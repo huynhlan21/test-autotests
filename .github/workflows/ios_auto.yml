@@ -27,13 +27,13 @@ jobs:
       - name: Set up iOS simulator
         uses: futureware-tech/simulator-action@v3
         with:
-          model: "iPhone 14"
+          model: "${{ vars.IOS_DEVICE }}"
 
-      - name: Check available simulator
-        run: xcrun simctl list
+      # - name: Check available simulator
+      #   run: xcrun simctl list
 
-      - name: Boot iOS Simulator
-        run: open -a Simulator --args -CurrentDeviceUDID ${{ vars.SIMULATOR_UDID }}
+      # - name: Boot iOS Simulator
+      #   run: open -a Simulator --args -CurrentDeviceUDID ${{ vars.SIMULATOR_UDID }}
 
       - name: Checkout Automation Code
         uses: actions/checkout@v4
@@ -69,7 +69,7 @@ jobs:
 
       - name: Run on iOS Simulator
         run: |
-          xcrun simctl install booted App/test.app && xcrun simctl launch booted ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          xcrun simctl install "${{ vars.IOS_DEVICE }}" App/test.app && xcrun simctl launch "${{ vars.IOS_DEVICE }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
           robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive Test Artifacts
