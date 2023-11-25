@@ -29,23 +29,26 @@ jobs:
         with:
           model: "${{ vars.IOS_DEVICE }}"
 
-      - name: Checkout Automation Code
-        uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.9
 
-      - name: Create and Activate Venv
-        run: |
-          python3.9 -m venv venv
-          source venv/bin/activate
-
       - name: Install frameworks and tools
         run: |
           npm i --location=global appium
           appium driver install uiautomator2
+
+      - name: CHECK APPIUM DRIVER
+        run: appium driver list --installed
+
+      - name: Checkout Automation Code
+        uses: actions/checkout@v4
+
+      - name: Create and Activate Venv
+        run: |
+          python3.9 -m venv venv
+          source venv/bin/activate
 
       - name: Install Dependencies
         run: pip install -r requirements.txt
