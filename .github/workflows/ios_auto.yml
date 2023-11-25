@@ -25,8 +25,7 @@ jobs:
         run: xcodebuild -version -sdk
 
       - name: Verify instruments utility
-        run: |
-          /Applications/Xcode.app/Contents/Developer/usr/bin/instruments
+        run: /usr/bin/instruments
 
       - name: Set up iOS simulator
         uses: futureware-tech/simulator-action@v3
