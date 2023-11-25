@@ -24,8 +24,8 @@ jobs:
       - name: Verify Xcode installation
         run: xcodebuild -version -sdk
 
-      - name: Verify instruments utility
-        run: /usr/bin/instruments
+      # - name: Verify instruments utility
+      #   run: /usr/bin/instruments
 
       - name: Set up iOS simulator
         uses: futureware-tech/simulator-action@v3
@@ -71,6 +71,9 @@ jobs:
 
       - name: Enable iOS Simulator
         run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+
+      - name: Check available simulator
+        run: xcrun simctl list
 
       - name: Boot iOS Simulator
         run: xcrun instruments -w "iPhone 14"
