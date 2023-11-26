@@ -29,13 +29,34 @@ jobs:
         with:
           model: "${{ vars.IOS_DEVICE }}"
 
-      - name: Get Simulator Information
+      - name: Get device information
+        id: device-info
         run: |
           DEVICE_INFO=$(xcrun simctl list --json devices available)
-          DEVICE_VERSION=$(echo "$DEVICE_INFO" | jq -r '.devices."iOS 14.3".[] | select(.model == "iPhone 14") | .name')
-          UDID=$(echo "$DEVICE_INFO" | jq -r '.devices."iOS 14.3".[] | select(.model == "iPhone 14") | .UDID')
-          echo "IOS_VERSION=${DEVICE_VERSION}" >> $GITHUB_ENV
-          echo "IOS_UDID=${UDID}" >> $GITHUB_ENV
+          DEVICE_VERSION=$(echo "$DEVICE_INFO" | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.model == "${{ vars.IOS_DEVICE }}") | .name')
+          UDID=$(echo "$DEVICE_INFO" | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.model == "${{ vars.IOS_DEVICE }}") | .udid')
+
+          if [[ -z "$DEVICE_VERSION" ]]; then
+            echo "Unable to find device version."
+            exit 1
+          fi
+
+          if [[ -z "$UDID" ]]; then
+            echo "Unable to find device UDID."
+            exit 1
+          fi
+
+          echo "Device Version: $DEVICE_VERSION"
+          echo "UDID: $UDID"
+
+        env:
+          DEVICE_VERSION: ${{ steps.device-info.outputs.device_version }}
+          UDID: ${{ steps.device-info.outputs.udid }}
+
+      - name: Set device version and UDID as environment variables
+        run: |
+          echo "DEVICE_VERSION=${DEVICE_VERSION}" >> $GITHUB_ENV
+          echo "UDID=${UDID}" >> $GITHUB_ENV
 
       - name: Set up Python
         uses: actions/setup-python@v4
