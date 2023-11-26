@@ -7,6 +7,6 @@ Test Setup        Open Application On The Device
 
 *** Test Cases ***
 Test Flow
-    Given Verify Tab Two Button Is Displayed
-    And Verify Tab Two Button Is Displayed
-    Then Verify Tab Two Button Is Displayed
+    Given Verify Tab One Title Is Displayed
+    And Verify Tab One Title Is Displayed
+    Then Verify Tab One Title Is Displayed

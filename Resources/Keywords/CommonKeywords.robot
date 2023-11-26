@@ -13,7 +13,7 @@ Open Application On The Device
     ...     platformVersion=${IPHONE_VERSION}
     ...     automationName=${IOS_UI_NAME}
 
-Verify Tab Two Button Is Displayed
-    wait until page contains element    ${TabTwo_Button}
-    element should be visible           ${TabTwo_Button}
+Verify Tab One Title Is Displayed
+    wait until page contains element    ${TabOne_Title}
+    element should be visible           ${TabOne_Title}
 
