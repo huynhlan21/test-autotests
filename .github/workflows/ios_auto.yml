@@ -25,6 +25,7 @@ jobs:
         run: xcodebuild -version -sdk
 
       - name: Set up iOS simulator
+        id: setup-ios-simulator
         uses: futureware-tech/simulator-action@v3
         with:
           model: "${{ vars.IOS_DEVICE }}"
@@ -33,19 +34,9 @@ jobs:
         id: device-info
         run: |
           DEVICE_INFO=$(xcrun simctl list --json devices available)
-          echo "Device Info: $DEVICE_INFO"
+          echo "Device Info: ${{ steps.setup-ios-simulator.outputs }}"
           DEVICE_VERSION=$(echo "$DEVICE_INFO" | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.model == "${{ vars.IOS_DEVICE }}") | .name')
           UDID=$(echo "$DEVICE_INFO" | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.model == "${{ vars.IOS_DEVICE }}") | .udid')
-
-          if [[ -z "$DEVICE_VERSION" ]]; then
-            echo "Unable to find device version."
-            exit 1
-          fi
-
-          if [[ -z "$UDID" ]]; then
-            echo "Unable to find device UDID."
-            exit 1
-          fi
 
           echo "Device Version: $DEVICE_VERSION"
           echo "UDID: $UDID"
