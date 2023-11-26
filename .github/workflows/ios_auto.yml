@@ -14,7 +14,7 @@ jobs:
     runs-on: macos-latest
     env:
       IOS_VERSION: 16.2
-      IOS_UDID: "FCAFCAA7-300F-4823-B6A9-04C5739984A5"
+      IOS_UDID: "6E16567A-DE1B-4B4E-A1A0-F5FBD6B720B1"
 
     steps:
       - name: Set up Homebrew
