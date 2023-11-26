@@ -29,6 +29,14 @@ jobs:
         with:
           model: "${{ vars.IOS_DEVICE }}"
 
+      - name: Get Simulator Information
+        run: |
+          DEVICE_INFO=$(xcrun simctl list --json devices available)
+          DEVICE_VERSION=$(echo "$DEVICE_INFO" | jq -r '.devices."iOS 14.3".[] | select(.model == "iPhone 14") | .name')
+          UDID=$(echo "$DEVICE_INFO" | jq -r '.devices."iOS 14.3".[] | select(.model == "iPhone 14") | .UDID')
+          echo "IOS_VERSION=${DEVICE_VERSION}" >> $GITHUB_ENV
+          echo "IOS_UDID=${UDID}" >> $GITHUB_ENV
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -52,7 +60,7 @@ jobs:
 
       - name: Download and Extract iOS Build
         run: |
-          wget -O ios_build.tar.gz ${{ vars.IOS_URL }}
+          wget -O ios_build.tar.gz ${{ vars.IOS_BUILD_URL }}
           mkdir -p App
           mv ios_build.tar.gz App/
           cd App
@@ -63,7 +71,12 @@ jobs:
 
       - name: Run on iOS Simulator
         run: |
-          xcrun simctl install "${{ vars.IOS_DEVICE }}" "App/test.app" && xcrun simctl launch "${{ vars.IOS_DEVICE }}" "${{ vars.IOS_BUNDLE_IDENTIFIER }}"
+          xcrun simctl install "${{ vars.IOS_DEVICE }}" "App/test.app"
+          xcrun simctl launch "${{ vars.IOS_DEVICE }}" "${{ vars.IOS_BUNDLE_IDENTIFIER }}"
+          appium --platform-name="iOS" --device-name=${{ vars.IOS_DEVICE }}
+          ... --udid=${{ env.IOS_UDID }} --bundle-id=${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          ... --platform-version=${{ env.IOS_VERSION }} --automation-name="XCUITest"
+          ... --app="http://127.0.0.1:4723"
           robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive Test Artifacts
@@ -77,7 +90,8 @@ jobs:
 
       - name: Clean up
         run: |
+          ls {.,App}
           rm -rf /tmp/appium*
           rm -f App/ios_build.tar.gz
-          rm -f App/test.app
+          rm -rf App/test.app
           rm -rf venv

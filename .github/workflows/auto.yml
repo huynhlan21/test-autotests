@@ -57,7 +57,7 @@ jobs:
 
       - name: Download APK File
         run: |
-          wget -O application.apk ${{ vars.APK_URL }}
+          wget -O application.apk ${{ vars.ANDROID_BUILD_URL }}
           mkdir -p App
           mv application.apk App/
 
