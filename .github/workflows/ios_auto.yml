@@ -32,7 +32,7 @@ jobs:
 
       - name: Set device version and UDID as environment variables
         run: |
-          DEVICE_INFO='${{ steps.setup-ios-simulator.outputs }}'
+          DEVICE_INFO='${{ steps.setup-ios-simulator.outputs.os_version }}'
           echo "Device Info: $DEVICE_INFO"
           echo "IOS_VERSION=${{ steps.setup-ios-simulator.outputs.deviceName }}" >> $GITHUB_ENV
           echo "IOS_UDID=${{ steps.setup-ios-simulator.outputs.udid }}" >> $GITHUB_ENV
