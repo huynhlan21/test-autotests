@@ -11,7 +11,7 @@ on:
 jobs:
   test:
     name: iOS Automation Test
-    runs-on: macos-latest
+    runs-on: macos-13
 
     steps:
       - name: Set up Homebrew
@@ -27,12 +27,12 @@ jobs:
       - name: Check Available Simulators
         run: xcrun simctl list devices
 
-      - name: Set up iOS Simulator
+      - name: Set up First iOS Simulator
+        id: setup-first-simulator
         uses: futureware-tech/simulator-action@v3
         with:
-          model: "${{ vars.IOS_DEVICE }}"
-          udid: "0D67E331-21AF-4FEE-8461-66E578488D72"
-          os_version: 16.2
+          model: "${{ vars.IOS_FIRST_DEVICE }}"
+          os_version: 16.4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -68,9 +68,9 @@ jobs:
 
       - name: Run and Test on iOS Simulator
         run: |
-          xcrun simctl list devices | grep "${{ vars.IOS_DEVICE }}"
-          xcrun simctl install "${{ vars.IOS_DEVICE }}" "App/test.app"
-          # xcrun simctl launch "${{ vars.IOS_DEVICE }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          xcrun simctl list devices | grep "${{ vars.IOS_FIRST_DEVICE }}"
+          xcrun simctl install "${{ vars.IOS_FIRST_DEVICE }}" "App/test.app"
+          # xcrun simctl launch "${{ vars.IOS_FIRST_DEVICE }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
           sleep 10
           robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
