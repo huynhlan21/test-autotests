@@ -31,7 +31,7 @@ jobs:
         uses: futureware-tech/simulator-action@v3
         with:
           model: "${{ vars.IOS_DEVICE }}"
-          udid: 0D67E331-21AF-4FEE-8461-66E578488D72
+          udid: "0D67E331-21AF-4FEE-8461-66E578488D72"
           os_version: 16.2
 
       - name: Set up Python
