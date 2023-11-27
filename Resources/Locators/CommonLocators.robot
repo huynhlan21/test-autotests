@@ -9,6 +9,6 @@ ${BUNDLE_ID}        com.lanhuynh.test
 
 ${IPHONE_VERSION}   16.2
 ${IPHONE_DEVICE}    iPhone 14
-${IPHONE_UDID}      my_first_udid
+${IPHONE_UDID}      0D67E331-21AF-4FEE-8461-66E578488D72
 
 ${TabOne_Title}       	//XCUIElementTypeStaticText[@name="Tab One"]
