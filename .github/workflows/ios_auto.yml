@@ -69,6 +69,7 @@ jobs:
           xcrun simctl list
           xcrun simctl install "${{ vars.IOS_DEVICE }}" "App/test.app"
           xcrun simctl launch "${{ vars.IOS_DEVICE }}" "${{ vars.IOS_BUNDLE_IDENTIFIER }}"
+          sleep 6
           robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive Test Artifacts
