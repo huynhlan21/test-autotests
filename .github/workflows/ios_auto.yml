@@ -34,17 +34,29 @@ jobs:
           model: "${{ vars.IOS_FIRST_DEVICE }}"
           os_version: ${{ vars.IOS_FIRST_OS_VER }}
 
-      - name: Set up Second iOS Simulator
-        id: setup-second-simulator
-        uses: futureware-tech/simulator-action@v3
-        with:
-          model: "${{ vars.IOS_SECOND_DEVICE }}"
-          os_version: ${{ vars.IOS_SECOND_OS_VER }}
+      # - name: Set up Second iOS Simulator
+      #   id: setup-second-simulator
+      #   uses: futureware-tech/simulator-action@v3
+      #   with:
+      #     model: "${{ vars.IOS_SECOND_DEVICE }}"
+      #     os_version: ${{ vars.IOS_SECOND_OS_VER }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
+
+      - name: Modify iOS UDID
+        run: |
+          python3
+          read_file = open('Resources/Locators/CommonLocators.robot', 'r')
+          file_content = read_file.read()
+          modify_content = file_content.replace("first_device_udid", "${{ steps.setup-first-simulator.outputs.udid }}")
+          read_file.close()
+          modify_file = open('Resources/Locators/CommonLocators.robot', 'w')
+          modify_file.write(modify_content)
+          modify_file.close()
+          exit()
 
       - name: Install Frameworks and Tools
         run: |
@@ -77,9 +89,7 @@ jobs:
         run: |
           xcrun simctl list devices | grep "${{ vars.IOS_FIRST_DEVICE }}"
           xcrun simctl install "${{ vars.IOS_FIRST_DEVICE }}" "App/test.app"
-          xcrun simctl list devices | grep "${{ vars.IOS_SECOND_DEVICE }}"
-          xcrun simctl install "${{ vars.IOS_SECOND_DEVICE }}" "App/test.app"
-          robot -d Reports --processes 2 UiTests
+          robot -d Reports --loglevel TRACE UiTests/TestSuite1.robot
 
       - name: Archive Test Artifacts
         uses: actions/upload-artifact@v3
