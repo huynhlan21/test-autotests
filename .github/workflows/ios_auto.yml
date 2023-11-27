@@ -34,7 +34,7 @@ jobs:
         id: device-info
         run: |
           DEVICE_INFO=$(xcrun simctl list --json devices available)
-          echo "Device Info: ${{ steps.setup-ios-simulator.outputs }}"
+          echo "Device Info: ${{ steps.setup-ios-simulator.outputs --json }}"
           DEVICE_VERSION=$(echo "$DEVICE_INFO" | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.model == "${{ vars.IOS_DEVICE }}") | .name')
           UDID=$(echo "$DEVICE_INFO" | jq -r '.devices | to_entries[] | select(.key | contains("iOS")) | .value[] | select(.model == "${{ vars.IOS_DEVICE }}") | .udid')
 
