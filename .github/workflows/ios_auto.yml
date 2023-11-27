@@ -66,7 +66,6 @@ jobs:
 
       - name: Run and Test on iOS Simulator
         run: |
-          xcrun simctl list
           xcrun simctl install "${{ vars.IOS_DEVICE }}" "App/test.app"
           xcrun simctl launch "${{ vars.IOS_DEVICE }}" "${{ vars.IOS_BUNDLE_IDENTIFIER }}"
           sleep 10
