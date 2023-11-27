@@ -31,6 +31,8 @@ jobs:
         uses: futureware-tech/simulator-action@v3
         with:
           model: "${{ vars.IOS_DEVICE }}"
+          udid: "my_first_udid"
+          os_version: 16.4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -68,9 +70,9 @@ jobs:
         run: |
           xcrun simctl list devices | grep "${{ vars.IOS_DEVICE }}"
           xcrun simctl install "${{ vars.IOS_DEVICE }}" "App/test.app"
-          xcrun simctl launch "${{ vars.IOS_DEVICE }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          # xcrun simctl launch "${{ vars.IOS_DEVICE }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
           sleep 10
-          robot -d Reports --loglevel TRACE --variable IOS_DEVICE:"${{ vars.IOS_DEVICE }}" --variable IOS_BUNDLE_IDENTIFIER:${{ vars.IOS_BUNDLE_IDENTIFIER }} UiTests/TestSuite.robot
+          robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive Test Artifacts
         uses: actions/upload-artifact@v3
