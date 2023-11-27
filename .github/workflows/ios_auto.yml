@@ -69,7 +69,7 @@ jobs:
         run: |
           xcrun simctl install "${{ vars.IOS_DEVICE }}" "App/test.app"
           xcrun simctl launch "${{ vars.IOS_DEVICE }}" "${{ vars.IOS_BUNDLE_IDENTIFIER }}"
-          appium --platformName "iOS" --deviceName "${{ vars.IOS_DEVICE }}" --udid "${{ env.IOS_UDID }}" --bundleId "${{ vars.IOS_BUNDLE_IDENTIFIER }}" --platformVersion "${{ vars.IOS_VERSION }}" --automationName "XCUITest" --app "http://127.0.0.1:4723"
+          appium --platform-name "iOS" --device-name "${{ vars.IOS_DEVICE }}" --udid "${{ env.IOS_UDID }}" --app "${{ vars.IOS_BUNDLE_IDENTIFIER }}" --platform-version ${{ vars.IOS_VERSION }} --automation-name "XCUITest" --address 127.0.0.1 --port 4723
           robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive Test Artifacts
