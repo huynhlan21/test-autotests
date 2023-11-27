@@ -48,12 +48,13 @@ jobs:
 
       - name: Modify iOS UDID
         run: |
+          ls
           python3 - <<EOF
-          read_file = open('Resources/Locators/CommonLocators.robot', 'r')
+          read_file = open('./Resources/Locators/CommonLocators.robot', 'r')
           file_content = read_file.read()
           modify_content = file_content.replace("first_device_udid", "${{ steps.setup-first-simulator.outputs.udid }}")
           read_file.close()
-          modify_file = open('Resources/Locators/CommonLocators.robot', 'w')
+          modify_file = open('./Resources/Locators/CommonLocators.robot', 'w')
           modify_file.write(modify_content)
           modify_file.close()
           exit()
