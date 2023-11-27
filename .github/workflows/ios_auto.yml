@@ -31,15 +31,15 @@ jobs:
         id: setup-first-simulator
         uses: futureware-tech/simulator-action@v3
         with:
-          model: "${{ vars.IOS_FIRST_DEVICE }}"
-          os_version: ${{ vars.IOS_FIRST_OS_VER }}
+          model: "iPhone 14"
+          os_version: 16.4
 
-      # - name: Set up Second iOS Simulator
-      #   id: setup-second-simulator
-      #   uses: futureware-tech/simulator-action@v3
-      #   with:
-      #     model: "${{ vars.IOS_SECOND_DEVICE }}"
-      #     os_version: ${{ vars.IOS_SECOND_OS_VER }}
+      - name: Set up Second iOS Simulator
+        id: setup-second-simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: "iPhone 14 Plus"
+          os_version: 17.0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -57,11 +57,13 @@ jobs:
       - name: Modify iOS UDID
         run: |
           echo "IOS_FIRST_DEVICE_UDID=${{ steps.setup-first-simulator.outputs.udid }}" >> $GITHUB_ENV
+          echo "IOS_SECOND_DEVICE_UDID=${{ steps.setup-second-simulator.outputs.udid }}" >> $GITHUB_ENV
           python3 - <<EOF
           file_path = 'Resources/Locators/CommonLocators.robot'
           read_file = open(file_path, 'r')
           file_content = read_file.read()
           modify_content = file_content.replace("first_device_udid", "${{ env.IOS_FIRST_DEVICE_UDID}}")
+          modify_content = file_content.replace("second_device_udid", "${{ env.IOS_SECOND_DEVICE_UDID}}")
           read_file.close()
           modify_file = open(file_path, 'w')
           modify_file.write(modify_content)
@@ -92,7 +94,9 @@ jobs:
         run: |
           xcrun simctl install "${{ env.IOS_FIRST_DEVICE_UDID }}" "App/test.app"
           xcrun simctl launch "${{env.IOS_FIRST_DEVICE_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
-          robot -d Reports --loglevel TRACE UiTests/TestSuite1.robot
+          xcrun simctl install "${{ env.IOS_SECOND_DEVICE_UDID }}" "App/test.app"
+          xcrun simctl launch "${{env.IOS_SECOND_DEVICE_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          robot -d Reports --loglevel TRACE UiTests
 
       - name: Archive Test Artifacts
         uses: actions/upload-artifact@v3
