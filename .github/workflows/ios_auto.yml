@@ -90,8 +90,7 @@ jobs:
 
       - name: Run and Test on iOS Simulator
         run: |
-          xcrun simctl list devices | grep "${{ vars.IOS_FIRST_DEVICE }}"
-          xcrun simctl install "${{ vars.IOS_FIRST_DEVICE }}" "App/test.app"
+          xcrun simctl install "${{ steps.setup-first-simulator.outputs.udid }}" "App/test.app"
           robot -d Reports --loglevel TRACE UiTests/TestSuite1.robot
 
       - name: Archive Test Artifacts
