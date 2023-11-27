@@ -32,7 +32,14 @@ jobs:
         uses: futureware-tech/simulator-action@v3
         with:
           model: "${{ vars.IOS_FIRST_DEVICE }}"
-          os_version: 16.4
+          os_version: ${{ vars.IOS_FIRST_OS_VER }}
+
+      - name: Set up Second iOS Simulator
+        id: setup-second-simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: "${{ vars.IOS_SECOND_DEVICE }}"
+          os_version: ${{ vars.IOS_SECOND_OS_VER }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -70,9 +77,9 @@ jobs:
         run: |
           xcrun simctl list devices | grep "${{ vars.IOS_FIRST_DEVICE }}"
           xcrun simctl install "${{ vars.IOS_FIRST_DEVICE }}" "App/test.app"
-          # xcrun simctl launch "${{ vars.IOS_FIRST_DEVICE }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
-          sleep 10
-          robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
+          xcrun simctl list devices | grep "${{ vars.IOS_SECOND_DEVICE }}"
+          xcrun simctl install "${{ vars.IOS_SECOND_DEVICE }}" "App/test.app"
+          robot -d Reports --processes 2 UiTests
 
       - name: Archive Test Artifacts
         uses: actions/upload-artifact@v3
