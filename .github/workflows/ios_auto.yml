@@ -56,12 +56,12 @@ jobs:
 
       - name: Modify iOS UDID
         run: |
-          ls
+          echo "IOS_FIRST_DEVICE_UDID=${{ steps.setup-first-simulator.outputs.udid }}" >> $GITHUB_ENV
           python3 - <<EOF
           file_path = 'Resources/Locators/CommonLocators.robot'
           read_file = open(file_path, 'r')
           file_content = read_file.read()
-          modify_content = file_content.replace("first_device_udid", "${{ steps.setup-first-simulator.outputs.udid }}")
+          modify_content = file_content.replace("first_device_udid", "${{ env.IOS_FIRST_DEVICE_UDID}}")
           read_file.close()
           modify_file = open(file_path, 'w')
           modify_file.write(modify_content)
@@ -90,7 +90,8 @@ jobs:
 
       - name: Run and Test on iOS Simulator
         run: |
-          xcrun simctl install "${{ steps.setup-first-simulator.outputs.udid }}" "App/test.app"
+          xcrun simctl install "${{ env.IOS_FIRST_DEVICE_UDID }}" "App/test.app"
+          xcrun simctl launch "${{env.IOS_FIRST_DEVICE_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
           robot -d Reports --loglevel TRACE UiTests/TestSuite1.robot
 
       - name: Archive Test Artifacts
