@@ -28,13 +28,9 @@ jobs:
         run: xcrun simctl list devices
 
       - name: Set up iOS Simulator
-        id: setup-ios-simulator
         uses: futureware-tech/simulator-action@v3
         with:
           model: "${{ vars.IOS_DEVICE }}"
-
-      - name: Set UDID as Environment Variable
-        run: echo "IOS_UDID=${{ steps.setup-ios-simulator.outputs.udid }}" >> $GITHUB_ENV
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -70,6 +66,7 @@ jobs:
 
       - name: Run and Test on iOS Simulator
         run: |
+          xcrun simctl list
           xcrun simctl install "${{ vars.IOS_DEVICE }}" "App/test.app"
           xcrun simctl launch "${{ vars.IOS_DEVICE }}" "${{ vars.IOS_BUNDLE_IDENTIFIER }}"
           robot -d Reports --loglevel TRACE UiTests/TestSuite.robot
