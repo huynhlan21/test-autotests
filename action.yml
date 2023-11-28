@@ -72,3 +72,4 @@ runs:
     - name: Set Environment Variables for Simulator
       id: set-env-simulator
       run: echo "SIMULATOR_UDID=${{ steps.setup-simulator.outputs.udid }}" >> $GITHUB_ENV
+      shell: bash
