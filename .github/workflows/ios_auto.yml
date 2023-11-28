@@ -14,17 +14,22 @@ jobs:
     runs-on: macos-11
 
     steps:
-      - name: Environment Set Up
-        uses: huynhlan21/test-autotests@v1.1
+      - name: Environment Setup
+        uses: huynhlan21/test-autotests@v1.2
         with:
           env-setup: "env-setup-first-version"
+
+      - name: Download and Extract iOS Build
+        uses: huynhlan21/test-autotests@v1.2
+        with:
+          ios-download-build: "${{ env.IOS_BUILD_URL }}"
 
       - name: Set up First iOS Simulator
         id: setup-first-simulator
         uses: futureware-tech/simulator-action@v3
         with:
-          model: "${{ vars.IOS_FIRST_DEVICE_MODEL }}"
-          os_version: ${{ vars.IOS_FIRST_DEVICE_VERSION }}
+          model: "${{ env.IOS_FIRST_DEVICE_MODEL }}"
+          os_version: ${{ env.IOS_FIRST_DEVICE_VERSION }}
 
       - name: Modify iOS UDID
         run: |
@@ -34,8 +39,8 @@ jobs:
           read_file = open(file_path, 'r')
           file_content = read_file.read()
           modify_content = file_content.replace("iphone_device_udid", "${{ env.IOS_FIRST_DEVICE_UDID }}")
-          modify_content = file_content.replace("iphone_device_model", "${{ vars.IOS_FIRST_DEVICE_MODEL }}")
-          modify_content = file_content.replace("iphone_device_version", "${{ vars.IOS_FIRST_DEVICE_VERSION }}")
+          modify_content = file_content.replace("iphone_device_model", "${{ env.IOS_FIRST_DEVICE_MODEL }}")
+          modify_content = file_content.replace("iphone_device_version", "${{ env.IOS_FIRST_DEVICE_VERSION }}")
           read_file.close()
           modify_file = open(file_path, 'w')
           modify_file.write(modify_content)
@@ -46,7 +51,7 @@ jobs:
       - name: Run and Test on iOS Simulator
         run: |
           xcrun simctl install "${{ env.IOS_FIRST_DEVICE_UDID }}" "App/test.app"
-          xcrun simctl launch "${{env.IOS_FIRST_DEVICE_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          xcrun simctl launch "${{env.IOS_FIRST_DEVICE_UDID }}" ${{ env.IOS_BUNDLE_IDENTIFIER }}
           robot -d Reports/first_version --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive Test Artifacts
@@ -71,10 +76,15 @@ jobs:
     runs-on: macos-13
 
     steps:
-      - name: Environment Set Up
-        uses: huynhlan21/test-autotests@v5
+      - name: Environment Setup
+        uses: huynhlan21/test-autotests@v1.2
         with:
           env-setup: "env-setup-second-version"
+
+      - name: Download and Extract iOS Build
+        uses: huynhlan21/test-autotests@v1.2
+        with:
+          ios-download-build: "${{ vars.IOS_BUILD_URL }}"
 
       - name: Set up Second iOS Simulator
         id: setup-second-simulator
@@ -128,10 +138,15 @@ jobs:
     runs-on: macos-13
 
     steps:
-      - name: Environment Set Up
-        uses: huynhlan21/test-autotests@v5
+      - name: Environment Setup
+        uses: huynhlan21/test-autotests@v1.2
         with:
           env-setup: "env-setup-third-version"
+
+      - name: Download and Extract iOS Build
+        uses: huynhlan21/test-autotests@v1.2
+        with:
+          ios-download-build: "${{ vars.IOS_BUILD_URL }}"
 
       - name: Set up Second iOS Simulator
         id: setup-third-simulator
