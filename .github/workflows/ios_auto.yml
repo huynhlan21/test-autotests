@@ -132,6 +132,8 @@ jobs:
     steps:
       - name: Checkout Automation Code
         uses: actions/checkout@v4
+        with:
+          ref: buid_yml
 
       - name: CHECK
         run: ls
