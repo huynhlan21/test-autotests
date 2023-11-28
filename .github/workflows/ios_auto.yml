@@ -15,27 +15,22 @@ jobs:
 
     steps:
       - name: Environment Setup
-        uses: huynhlan21/test-autotests@v1.6
+        id: "env-setup"
+        uses: huynhlan21/test-autotests@v1.7
         with:
-          ios-download-build: "${{ env.IOS_BUILD_URL }}"
-
-      - name: Set up First iOS Simulator
-        id: setup-first-simulator
-        uses: futureware-tech/simulator-action@v3
-        with:
-          model: "${{ env.IOS_FIRST_DEVICE_MODEL }}"
-          os_version: ${{ env.IOS_FIRST_DEVICE_VERSION }}
+          ios-download-build: "${{ vars.IOS_BUILD_URL }}"
+          ios-model: "${{ vars.IOS_FIRST_DEVICE_MODEL }}"
+          ios-version: ${{ vars.IOS_FIRST_DEVICE_VERSION }}
 
       - name: Modify iOS UDID
         run: |
-          echo "IOS_FIRST_DEVICE_UDID=${{ steps.setup-first-simulator.outputs.udid }}" >> $GITHUB_ENV
           python3 - <<EOF
           file_path = 'Resources/Locators/CommonLocators.robot'
           read_file = open(file_path, 'r')
           file_content = read_file.read()
-          modify_content = file_content.replace("iphone_device_udid", "${{ env.IOS_FIRST_DEVICE_UDID }}")
-          modify_content = file_content.replace("iphone_device_model", "${{ env.IOS_FIRST_DEVICE_MODEL }}")
-          modify_content = file_content.replace("iphone_device_version", "${{ env.IOS_FIRST_DEVICE_VERSION }}")
+          modify_content = file_content.replace("iphone_device_udid", "${{ env.SIMULATOR_UDID }}")
+          modify_content = file_content.replace("iphone_device_model", "${{ vars.IOS_FIRST_DEVICE_MODEL }}")
+          modify_content = file_content.replace("iphone_device_version", "${{ vars.IOS_FIRST_DEVICE_VERSION }}")
           read_file.close()
           modify_file = open(file_path, 'w')
           modify_file.write(modify_content)
@@ -45,8 +40,8 @@ jobs:
 
       - name: Run and Test on iOS Simulator
         run: |
-          xcrun simctl install "${{ env.IOS_FIRST_DEVICE_UDID }}" "App/test.app"
-          xcrun simctl launch "${{env.IOS_FIRST_DEVICE_UDID }}" ${{ env.IOS_BUNDLE_IDENTIFIER }}
+          xcrun simctl install "${{ env.SIMULATOR_UDID }}" "App/test.app"
+          xcrun simctl launch "${{env.SIMULATOR_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
           robot -d Reports/first_version --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive Test Artifacts
@@ -72,9 +67,11 @@ jobs:
 
     steps:
       - name: Environment Setup
-        uses: huynhlan21/test-autotests@v1.6
+        uses: huynhlan21/test-autotests@v1.7
         with:
           ios-download-build: "${{ vars.IOS_BUILD_URL }}"
+          ios-model: "${{ vars.IOS_SECOND_DEVICE_MODEL }}"
+          ios-version: ${{ vars.IOS_SECOND_DEVICE_VERSION }}
 
       - name: Set up Second iOS Simulator
         id: setup-second-simulator
@@ -85,12 +82,11 @@ jobs:
 
       - name: Modify iOS UDID
         run: |
-          echo "IOS_SECOND_DEVICE_UDID=${{ steps.setup-second-simulator.outputs.udid }}" >> $GITHUB_ENV
           python3 - <<EOF
           file_path = 'Resources/Locators/CommonLocators.robot'
           read_file = open(file_path, 'r')
           file_content = read_file.read()
-          modify_content = file_content.replace("iphone_device_udid", "${{ env.IOS_SECOND_DEVICE_UDID }}")
+          modify_content = file_content.replace("iphone_device_udid", "${{ env.SIMULATOR_UDID }}")
           modify_content = file_content.replace("iphone_device_model", "${{ vars.IOS_SECOND_DEVICE_MODEL }}")
           modify_content = file_content.replace("iphone_device_version", "${{ vars.IOS_SECOND_DEVICE_VERSION }}")
           read_file.close()
@@ -102,8 +98,8 @@ jobs:
 
       - name: Run and Test on iOS Simulator
         run: |
-          xcrun simctl install "${{ env.IOS_SECOND_DEVICE_UDID }}" "App/test.app"
-          xcrun simctl launch "${{env.IOS_SECOND_DEVICE_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          xcrun simctl install "${{ env.SIMULATOR_UDID }}" "App/test.app"
+          xcrun simctl launch "${{env.SIMULATOR_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
           robot -d Reports/second_version --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive Test Artifacts
@@ -129,9 +125,11 @@ jobs:
 
     steps:
       - name: Environment Setup
-        uses: huynhlan21/test-autotests@v1.6
+        uses: huynhlan21/test-autotests@v1.7
         with:
           ios-download-build: "${{ vars.IOS_BUILD_URL }}"
+          ios-model: "${{ vars.IOS_THIRD_DEVICE_MODEL }}"
+          ios-version: ${{ vars.IOS_THIRD_DEVICE_VERSION }}
 
       - name: Set up Second iOS Simulator
         id: setup-third-simulator
@@ -142,12 +140,11 @@ jobs:
 
       - name: Modify iOS UDID
         run: |
-          echo "IOS_THIRD_DEVICE_UDID=${{ steps.setup-third-simulator.outputs.udid }}" >> $GITHUB_ENV
           python3 - <<EOF
           file_path = 'Resources/Locators/CommonLocators.robot'
           read_file = open(file_path, 'r')
           file_content = read_file.read()
-          modify_content = file_content.replace("iphone_device_udid", "${{ env.IOS_THIRD_DEVICE_UDID }}")
+          modify_content = file_content.replace("iphone_device_udid", "${{ env.SIMULATOR_UDID }}")
           modify_content = file_content.replace("iphone_device_model", "${{ vars.IOS_THIRD_DEVICE_MODEL }}")
           modify_content = file_content.replace("iphone_device_version", "${{ vars.IOS_THIRD_DEVICE_VERSION }}")
           read_file.close()
@@ -159,8 +156,8 @@ jobs:
 
       - name: Run and Test on iOS Simulator
         run: |
-          xcrun simctl install "${{ env.IOS_THIRD_DEVICE_UDID }}" "App/test.app"
-          xcrun simctl launch "${{env.IOS_THIRD_DEVICE_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          xcrun simctl install "${{ env.SIMULATOR_UDID }}" "App/test.app"
+          xcrun simctl launch "${{env.SIMULATOR_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
           robot -d Reports/third_version --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive Test Artifacts
