@@ -15,12 +15,12 @@ jobs:
 
     steps:
       - name: Environment Setup
-        uses: huynhlan21/test-autotests@v1.5
+        uses: huynhlan21/test-autotests@v1.6
         with:
           env-setup: "env-setup-first-version"
 
       - name: Download and Extract iOS Build
-        uses: huynhlan21/test-autotests@v1.5
+        uses: huynhlan21/test-autotests@v1.6
         with:
           ios-download-build: "${{ env.IOS_BUILD_URL }}"
 
@@ -77,12 +77,12 @@ jobs:
 
     steps:
       - name: Environment Setup
-        uses: huynhlan21/test-autotests@v1.5
+        uses: huynhlan21/test-autotests@v1.6
         with:
           env-setup: "env-setup-second-version"
 
       - name: Download and Extract iOS Build
-        uses: huynhlan21/test-autotests@v1.5
+        uses: huynhlan21/test-autotests@v1.6
         with:
           ios-download-build: "${{ vars.IOS_BUILD_URL }}"
 
@@ -139,12 +139,12 @@ jobs:
 
     steps:
       - name: Environment Setup
-        uses: huynhlan21/test-autotests@v1.5
+        uses: huynhlan21/test-autotests@v1.6
         with:
           env-setup: "env-setup-third-version"
 
       - name: Download and Extract iOS Build
-        uses: huynhlan21/test-autotests@v1.5
+        uses: huynhlan21/test-autotests@v1.6
         with:
           ios-download-build: "${{ vars.IOS_BUILD_URL }}"
 
