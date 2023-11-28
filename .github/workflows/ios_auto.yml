@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Environment Set Up
-        uses: huynhlan21/test-autotests@v7
+        uses: huynhlan21/test-autotests@v1.1
         with:
           env-setup: "env-setup-first-version"
 
