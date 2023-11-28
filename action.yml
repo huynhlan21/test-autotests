@@ -1,0 +1,24 @@
+name: Environment Set Up
+description: "Environment Set Up"
+inputs:
+  env-set-up:
+    required: true
+    # default: "World"
+
+# outputs:
+#   random-number:
+#     value: ${{ steps.random-number-generator.outputs.random-number }}
+runs:
+  using: "composite"
+  steps:
+    - name: Set Up Homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+
+    - name: Set Up Xcode
+      run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+
+    - name: Verify Xcode Installation
+      run: xcodebuild -version -sdk
+
+    - name: Check Available Simulators
+      run: xcrun simctl list devices
