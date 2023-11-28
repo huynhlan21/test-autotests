@@ -35,7 +35,7 @@ jobs:
           os_version: 16.4
 
       - name: Shutdown First iOS Simulator
-        run: xcrun simctl shutdown "iPhone 14"
+        run: xcrun simctl shutdown "${{ steps.setup-first-simulator.outputs.udid }}"
 
       - name: Check Available Simulators
         run: xcrun simctl list devices
