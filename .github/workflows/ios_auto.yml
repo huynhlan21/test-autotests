@@ -28,7 +28,7 @@ jobs:
 
       - name: Environment Set Up
         id: "test"
-        uses: huynhlan21/test-autotests@v3
+        uses: huynhlan21/test-autotests@v4
         with:
           env-set-up: "test"
 
