@@ -28,7 +28,8 @@ jobs:
 
       - name: Environment Set Up
         uses: actions/test-autotests@v1
-        with: env-set-up
+        with:
+          env-set-up: "test"
 
       - name: Set up First iOS Simulator
         id: setup-first-simulator
