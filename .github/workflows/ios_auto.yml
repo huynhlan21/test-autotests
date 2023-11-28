@@ -10,22 +10,25 @@ on:
 
 jobs:
   test:
-    name: iOS Automation Test
+    name: iOS Automation Test for OS Version ${{ vars.IOS_FIRST_SIM_OS }}
     runs-on: macos-13
 
     steps:
-      - name: Set up Homebrew
-        id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+      # - name: Set up Homebrew
+      #   uses: Homebrew/actions/setup-homebrew@master
 
-      - name: Set up Xcode
-        run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+      # - name: Set up Xcode
+      #   run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
 
-      - name: Verify Xcode Installation
-        run: xcodebuild -version -sdk
+      # - name: Verify Xcode Installation
+      #   run: xcodebuild -version -sdk
 
-      - name: Check Available Simulators
-        run: xcrun simctl list devices
+      # - name: Check Available Simulators
+      #   run: xcrun simctl list devices
+
+      - name: Environment Set Up
+        uses: actions/test-autotests@v1
+        with: env-set-up
 
       - name: Set up First iOS Simulator
         id: setup-first-simulator
