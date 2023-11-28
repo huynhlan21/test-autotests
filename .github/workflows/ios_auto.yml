@@ -3,10 +3,10 @@ name: Automation Build and Release
 on:
   push:
     branches:
-      - buid_yml
+      - build_yml
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   autotests-first-version:

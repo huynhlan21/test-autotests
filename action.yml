@@ -36,9 +36,6 @@ runs:
         appium driver install xcuitest
       shell: bash
 
-    - name: Checkout Automation Code
-      uses: actions/checkout@v4
-
     - name: Create and Activate Venv
       run: |
         python3 -m venv venv
