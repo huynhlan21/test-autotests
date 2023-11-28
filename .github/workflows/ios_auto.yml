@@ -14,8 +14,7 @@ jobs:
     runs-on: macos-11
 
     steps:
-      - &checkout-auto-code
-        name: Checkout Automation Code
+      - name: Checkout Automation Code
         uses: actions/checkout@v4
 
       - name: Environment Setup
@@ -71,7 +70,7 @@ jobs:
 
     steps:
       - name: Checkout Automation Code
-        run: *checkout-auto-code
+        uses: actions/checkout@v4
 
       - name: Environment Setup
         uses: ./action.yml
@@ -132,7 +131,7 @@ jobs:
 
     steps:
       - name: Checkout Automation Code
-        run: *checkout-auto-code
+        uses: actions/checkout@v4
 
       - name: Environment Setup
         uses: ./action.yml
