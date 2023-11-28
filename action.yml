@@ -4,6 +4,7 @@ inputs:
   env-set-up:
     required: true
     # default: "World"
+
 # outputs:
 #   random-number:
 #     value: ${{ steps.random-number-generator.outputs.random-number }}
