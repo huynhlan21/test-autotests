@@ -28,7 +28,7 @@ jobs:
 
       - name: Environment Set Up
         id: "test"
-        uses: actions/test-autotests@v3
+        uses: test-autotests@v1
         with:
           env-set-up: "test"
 
