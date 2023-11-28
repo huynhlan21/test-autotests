@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Environment Setup
         id: "env-setup"
-        uses: huynhlan21/test-autotests@v1.8
+        uses: huynhlan21/test-autotests@v1.9
         with:
           ios-download-build: "${{ vars.IOS_BUILD_URL }}"
           ios-model: "${{ vars.IOS_FIRST_DEVICE_MODEL }}"
@@ -67,7 +67,7 @@ jobs:
 
     steps:
       - name: Environment Setup
-        uses: huynhlan21/test-autotests@v1.8
+        uses: huynhlan21/test-autotests@v1.9
         with:
           ios-download-build: "${{ vars.IOS_BUILD_URL }}"
           ios-model: "${{ vars.IOS_SECOND_DEVICE_MODEL }}"
@@ -125,7 +125,7 @@ jobs:
 
     steps:
       - name: Environment Setup
-        uses: huynhlan21/test-autotests@v1.8
+        uses: huynhlan21/test-autotests@v1.9
         with:
           ios-download-build: "${{ vars.IOS_BUILD_URL }}"
           ios-model: "${{ vars.IOS_THIRD_DEVICE_MODEL }}"
