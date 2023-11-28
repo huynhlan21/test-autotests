@@ -133,6 +133,9 @@ jobs:
       - name: Checkout Automation Code
         uses: actions/checkout@v4
 
+      - name: CHECK
+        run: ls
+
       - name: Environment Setup
         uses: ./action.yml
         with:
