@@ -2,13 +2,13 @@
 Library    AppiumLibrary
 
 *** Variables ***
-${URL}              http://127.0.0.1:4723/wd/hub
-${PLATFORM_NAME}    Android
-${DEVICE_NAME}     emulator-5554
-${APP_PACKAGE}      com.lanhuynh.test
-${APP_ACTIVITY}     com.lanhuynh.test.MainActivity
-${AUTOMATION_NAME}  Uiautomator2
+${URL}              http://127.0.0.1:4723
+${IOS_PLATFORM}     iOS
+${IOS_UI_NAME}      XCUITest
+${BUNDLE_ID}        com.lanhuynh.test
 
-${TabOne_Screen}    	//android.widget.TextView[@text="app/(tabs)/index.tsx"]
-${TabTwo_Button}        //android.widget.TextView[@text="Tab Two"]
-${TabTwo_Screen}        //android.widget.TextView[@text="app/(tabs)/two.tsx"]
+${IPHONE_VERSION}   iphone_device_version
+${IPHONE_DEVICE}    iphone_device_model
+${IPHONE_UDID}      iphone_device_udid
+
+${TabOne_Title}     //XCUIElementTypeStaticText[@name="Tab One"]

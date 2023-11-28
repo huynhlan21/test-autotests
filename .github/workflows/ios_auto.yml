@@ -1,0 +1,190 @@
+name: Automation Build and Release
+
+on:
+  push:
+    branches:
+      - buid_yml
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  autotests-first-version:
+    name: iOS Automation Test for OS Version ${{ vars.IOS_FIRST_DEVICE_VERSION }}
+    runs-on: macos-11
+
+    steps:
+      - name: Checkout Automation Code
+        uses: actions/checkout@v4
+
+      - name: Environment Setup
+        id: "env-setup"
+        uses: ./action.yml
+        with:
+          ios-download-build: "${{ vars.IOS_BUILD_URL }}"
+          ios-model: "${{ vars.IOS_FIRST_DEVICE_MODEL }}"
+          ios-version: ${{ vars.IOS_FIRST_DEVICE_VERSION }}
+
+      - name: Modify iOS UDID
+        run: |
+          python3 - <<EOF
+          file_path = 'Resources/Locators/CommonLocators.robot'
+          read_file = open(file_path, 'r')
+          file_content = read_file.read()
+          modify_content = file_content.replace("iphone_device_udid", "${{ env.SIMULATOR_UDID }}") \
+                .replace("iphone_device_model", "${{ vars.IOS_FIRST_DEVICE_MODEL }}") \
+                .replace("iphone_device_version", "${{ vars.IOS_FIRST_DEVICE_VERSION }}")
+          read_file.close()
+          modify_file = open(file_path, 'w')
+          modify_file.write(modify_content)
+          modify_file.close()
+          exit()
+          EOF
+
+      - name: Run and Test on iOS Simulator
+        run: |
+          xcrun simctl install "${{ env.SIMULATOR_UDID }}" "App/test.app"
+          xcrun simctl launch "${{env.SIMULATOR_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          robot -d Reports/first_version --loglevel TRACE UiTests/TestSuite.robot
+
+      - name: Archive Test Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: iOS Automation Reports
+          path: Reports/first_version
+
+      - name: Stop Appium Server
+        run: pkill -f appium
+
+      - name: Clean up
+        run: |
+          ls {.,App}
+          rm -rf /tmp/appium*
+          rm -f App/ios_build.tar.gz
+          rm -rf App/test.app
+          rm -rf venv
+
+  autotests-second-version:
+    name: iOS Automation Test for OS Version ${{ vars.IOS_SECOND_DEVICE_VERSION }}
+    runs-on: macos-13
+
+    steps:
+      - name: Checkout Automation Code
+        uses: actions/checkout@v4
+
+      - name: Environment Setup
+        uses: ./action.yml
+        with:
+          ios-download-build: "${{ vars.IOS_BUILD_URL }}"
+          ios-model: "${{ vars.IOS_SECOND_DEVICE_MODEL }}"
+          ios-version: ${{ vars.IOS_SECOND_DEVICE_VERSION }}
+
+      - name: Set up Second iOS Simulator
+        id: setup-second-simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: "${{ vars.IOS_SECOND_DEVICE_MODEL}}"
+          os_version: ${{ vars.IOS_SECOND_DEVICE_VERSION }}
+
+      - name: Modify iOS UDID
+        run: |
+          python3 - <<EOF
+          file_path = 'Resources/Locators/CommonLocators.robot'
+          read_file = open(file_path, 'r')
+          file_content = read_file.read()
+          modify_content = file_content.replace("iphone_device_udid", "${{ env.SIMULATOR_UDID }}") \
+                .replace("iphone_device_model", "${{ vars.IOS_SECOND_DEVICE_MODEL }}") \
+                .replace("iphone_device_version", "${{ vars.IOS_SECOND_DEVICE_VERSION }}")
+          read_file.close()
+          modify_file = open(file_path, 'w')
+          modify_file.write(modify_content)
+          modify_file.close()
+          exit()
+          EOF
+
+      - name: Run and Test on iOS Simulator
+        run: |
+          xcrun simctl install "${{ env.SIMULATOR_UDID }}" "App/test.app"
+          xcrun simctl launch "${{env.SIMULATOR_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          robot -d Reports/second_version --loglevel TRACE UiTests/TestSuite.robot
+
+      - name: Archive Test Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: iOS Automation Reports
+          path: Reports/second_version
+
+      - name: Stop Appium Server
+        run: pkill -f appium
+
+      - name: Clean up
+        run: |
+          ls {.,App}
+          rm -rf /tmp/appium*
+          rm -f App/ios_build.tar.gz
+          rm -rf App/test.app
+          rm -rf venv
+
+  autotests-third-version:
+    name: iOS Automation Test for OS Version ${{ vars.IOS_THIRD_DEVICE_VERSION }}
+    runs-on: macos-13
+
+    steps:
+      - name: Checkout Automation Code
+        uses: actions/checkout@v4
+
+      - name: CHECK
+        run: ls
+
+      - name: Environment Setup
+        uses: ./action.yml
+        with:
+          ios-download-build: "${{ vars.IOS_BUILD_URL }}"
+          ios-model: "${{ vars.IOS_THIRD_DEVICE_MODEL }}"
+          ios-version: ${{ vars.IOS_THIRD_DEVICE_VERSION }}
+
+      - name: Set up Second iOS Simulator
+        id: setup-third-simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: "${{ vars.IOS_THIRD_DEVICE_MODEL}}"
+          os_version: ${{ vars.IOS_THIRD_DEVICE_VERSION }}
+
+      - name: Modify iOS UDID
+        run: |
+          python3 - <<EOF
+          file_path = 'Resources/Locators/CommonLocators.robot'
+          read_file = open(file_path, 'r')
+          file_content = read_file.read()
+          modify_content = file_content.replace("iphone_device_udid", "${{ env.SIMULATOR_UDID }}") \
+                .replace("iphone_device_model", "${{ vars.IOS_THIRD_DEVICE_MODEL }}") \
+                .replace("iphone_device_version", "${{ vars.IOS_THIRD_DEVICE_VERSION }}")
+          read_file.close()
+          modify_file = open(file_path, 'w')
+          modify_file.write(modify_content)
+          modify_file.close()
+          exit()
+          EOF
+
+      - name: Run and Test on iOS Simulator
+        run: |
+          xcrun simctl install "${{ env.SIMULATOR_UDID }}" "App/test.app"
+          xcrun simctl launch "${{env.SIMULATOR_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          robot -d Reports/third_version --loglevel TRACE UiTests/TestSuite.robot
+
+      - name: Archive Test Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: iOS Automation Reports
+          path: Reports/third_version
+
+      - name: Stop Appium Server
+        run: pkill -f appium
+
+      - name: Clean up
+        run: |
+          ls {.,App}
+          rm -rf /tmp/appium*
+          rm -f App/ios_build.tar.gz
+          rm -rf App/test.app
+          rm -rf venv
