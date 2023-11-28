@@ -3,10 +3,6 @@ description: "My Custom Action"
 runs:
   - name: Enviroment Setup
     description: "Enviroment Setup"
-    inputs:
-      env-setup:
-        required: true
-        default: "World"
     runs:
       using: "composite"
       steps:
@@ -41,7 +37,7 @@ runs:
 
         - name: Create and Activate Venv
           run: |
-            python3.9 -m venv venv
+            python3 -m venv venv
             source venv/bin/activate
           shell: bash
 
@@ -58,7 +54,6 @@ runs:
     inputs:
       ios-download-build:
         required: true
-        default: "World"
     runs:
       using: "composite"
       steps:
