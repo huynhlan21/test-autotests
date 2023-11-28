@@ -27,9 +27,10 @@ runs:
 
     - name: Run and Test on iOS Simulator
       run: |
+        ls
         xcrun simctl install "${{ env.SIMULATOR_UDID }}" "App/test.app"
         xcrun simctl launch "${{env.SIMULATOR_UDID }}" "com.lanhuynh.test"
-        robot -d ${{ inputs.report-path }} --loglevel TRACE UiTests/TestSuite.robot
+        robot -d Reports/ios_${{ inputs.ios-version }} --loglevel TRACE UiTests/TestSuite.robot
       shell: bash
 
     - name: Archive Test Artifacts
