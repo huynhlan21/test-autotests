@@ -25,7 +25,7 @@ runs:
     - name: Set Up Python
       uses: actions/setup-python@v4
       with:
-        python-version: ${{ vars.PYTHON_VERSION }}
+        python-version: ${{ github.repository }}/PYTHON_VERSION
 
     - name: Install Frameworks and Tools
       run: |
@@ -48,7 +48,7 @@ runs:
 
     - name: Download and Extract iOS Build
       run: |
-        wget -O ios_build.tar.gz ${{ vars.IOS_BUILD_URL }}
+        wget -O ios_build.tar.gz ${{ github.repository }}/IOS_BUILD_URL 
         mkdir -p App
         mv ios_build.tar.gz App/
         cd App
