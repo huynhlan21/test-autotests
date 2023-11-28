@@ -1,12 +1,9 @@
-name: Environment Set Up
-description: "Environment Set Up"
+name: Environment Setup
+description: "Environment Setup"
 inputs:
-  env-set-up:
+  env-setup:
     required: true
     default: "World"
-# outputs:
-#   random-number:
-#     value: ${{ steps.random-number-generator.outputs.random-number }}
 runs:
   using: "composite"
   steps:
@@ -23,4 +20,41 @@ runs:
 
     - name: Check Available Simulators
       run: xcrun simctl list devices
+      shell: bash
+
+    - name: Set Up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ vars.PYTHON_VERSION }}
+
+    - name: Install Frameworks and Tools
+      run: |
+        npm i --location=global appium
+        appium driver install xcuitest
+      shell: bash
+
+    - name: Checkout Automation Code
+      uses: actions/checkout@v4
+
+    - name: Create and Activate Venv
+      run: |
+        python3.9 -m venv venv
+        source venv/bin/activate
+      shell: bash
+
+    - name: Install Dependencies
+      run: pip install -r requirements.txt
+      shell: bash
+
+    - name: Download and Extract iOS Build
+      run: |
+        wget -O ios_build.tar.gz ${{ vars.IOS_BUILD_URL }}
+        mkdir -p App
+        mv ios_build.tar.gz App/
+        cd App
+        tar -xzf ios_build.tar.gz
+      shell: bash
+
+    - name: Start Appium Server
+      run: appium &
       shell: bash

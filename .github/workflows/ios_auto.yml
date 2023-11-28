@@ -9,72 +9,33 @@ on:
       - master
 
 jobs:
-  test:
-    name: iOS Automation Test for OS Version ${{ vars.IOS_FIRST_SIM_OS }}
-    runs-on: macos-13
+  autotests-first-version:
+    name: iOS Automation Test for OS Version ${{ vars.IOS_FIRST_DEVICE_VERSION }}
+    runs-on: macos-11
 
     steps:
-      # - name: Set up Homebrew
-      #   uses: Homebrew/actions/setup-homebrew@master
-
-      # - name: Set up Xcode
-      #   run: sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
-
-      # - name: Verify Xcode Installation
-      #   run: xcodebuild -version -sdk
-
-      # - name: Check Available Simulators
-      #   run: xcrun simctl list devices
-
       - name: Environment Set Up
-        id: "test"
         uses: huynhlan21/test-autotests@v5
         with:
-          env-set-up: "test"
+          env-setup: "env-setup-first-version"
 
       - name: Set up First iOS Simulator
         id: setup-first-simulator
         uses: futureware-tech/simulator-action@v3
         with:
-          model: "iPhone 14"
-          os_version: 16.4
-
-      - name: Shutdown First iOS Simulator
-        run: xcrun simctl shutdown "${{ steps.setup-first-simulator.outputs.udid }}"
-
-      - name: Check Available Simulators
-        run: xcrun simctl list devices
-
-      - name: Set up Second iOS Simulator
-        id: setup-second-simulator
-        uses: futureware-tech/simulator-action@v3
-        with:
-          model: "iPhone 14 Plus"
-          os_version: 17.0
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ vars.PYTHON_VERSION }}
-
-      - name: Install Frameworks and Tools
-        run: |
-          npm i --location=global appium
-          appium driver install xcuitest
-
-      - name: Checkout Automation Code
-        uses: actions/checkout@v4
+          model: "${{ vars.IOS_FIRST_DEVICE_MODEL }}"
+          os_version: ${{ vars.IOS_FIRST_DEVICE_VERSION }}
 
       - name: Modify iOS UDID
         run: |
           echo "IOS_FIRST_DEVICE_UDID=${{ steps.setup-first-simulator.outputs.udid }}" >> $GITHUB_ENV
-          echo "IOS_SECOND_DEVICE_UDID=${{ steps.setup-second-simulator.outputs.udid }}" >> $GITHUB_ENV
           python3 - <<EOF
           file_path = 'Resources/Locators/CommonLocators.robot'
           read_file = open(file_path, 'r')
           file_content = read_file.read()
-          modify_content = file_content.replace("first_device_udid", "${{ env.IOS_FIRST_DEVICE_UDID}}")
-          modify_content = file_content.replace("second_device_udid", "${{ env.IOS_SECOND_DEVICE_UDID}}")
+          modify_content = file_content.replace("iphone_device_udid", "${{ env.IOS_FIRST_DEVICE_UDID }}")
+          modify_content = file_content.replace("iphone_device_model", "${{ vars.IOS_FIRST_DEVICE_MODEL }}")
+          modify_content = file_content.replace("iphone_device_version", "${{ vars.IOS_FIRST_DEVICE_VERSION }}")
           read_file.close()
           modify_file = open(file_path, 'w')
           modify_file.write(modify_content)
@@ -82,38 +43,131 @@ jobs:
           exit()
           EOF
 
-      - name: Create and Activate Venv
-        run: |
-          python3.9 -m venv venv
-          source venv/bin/activate
-
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
-
-      - name: Download and Extract iOS Build
-        run: |
-          wget -O ios_build.tar.gz ${{ vars.IOS_BUILD_URL }}
-          mkdir -p App
-          mv ios_build.tar.gz App/
-          cd App
-          tar -xzf ios_build.tar.gz
-
-      - name: Start Appium Server
-        run: appium &
-
       - name: Run and Test on iOS Simulator
         run: |
           xcrun simctl install "${{ env.IOS_FIRST_DEVICE_UDID }}" "App/test.app"
           xcrun simctl launch "${{env.IOS_FIRST_DEVICE_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
-          xcrun simctl install "${{ env.IOS_SECOND_DEVICE_UDID }}" "App/test.app"
-          xcrun simctl launch "${{env.IOS_SECOND_DEVICE_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
-          robot -d Reports --loglevel TRACE UiTests
+          robot -d Reports/first_version --loglevel TRACE UiTests/TestSuite.robot
 
       - name: Archive Test Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: iOS Automation Reports
-          path: Reports
+          path: Reports/first_version
+
+      - name: Stop Appium Server
+        run: pkill -f appium
+
+      - name: Clean up
+        run: |
+          ls {.,App}
+          rm -rf /tmp/appium*
+          rm -f App/ios_build.tar.gz
+          rm -rf App/test.app
+          rm -rf venv
+
+  autotests-second-version:
+    name: iOS Automation Test for OS Version ${{ vars.IOS_SECOND_DEVICE_VERSION }}
+    runs-on: macos-13
+
+    steps:
+      - name: Environment Set Up
+        uses: huynhlan21/test-autotests@v5
+        with:
+          env-setup: "env-setup-second-version"
+
+      - name: Set up Second iOS Simulator
+        id: setup-second-simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: "${{ vars.IOS_SECOND_DEVICE_MODEL}}"
+          os_version: ${{ vars.IOS_SECOND_DEVICE_VERSION }}
+
+      - name: Modify iOS UDID
+        run: |
+          echo "IOS_SECOND_DEVICE_UDID=${{ steps.setup-second-simulator.outputs.udid }}" >> $GITHUB_ENV
+          python3 - <<EOF
+          file_path = 'Resources/Locators/CommonLocators.robot'
+          read_file = open(file_path, 'r')
+          file_content = read_file.read()
+          modify_content = file_content.replace("iphone_device_udid", "${{ env.IOS_SECOND_DEVICE_UDID }}")
+          modify_content = file_content.replace("iphone_device_model", "${{ vars.IOS_SECOND_DEVICE_MODEL }}")
+          modify_content = file_content.replace("iphone_device_version", "${{ vars.IOS_SECOND_DEVICE_VERSION }}")
+          read_file.close()
+          modify_file = open(file_path, 'w')
+          modify_file.write(modify_content)
+          modify_file.close()
+          exit()
+          EOF
+
+      - name: Run and Test on iOS Simulator
+        run: |
+          xcrun simctl install "${{ env.IOS_SECOND_DEVICE_UDID }}" "App/test.app"
+          xcrun simctl launch "${{env.IOS_SECOND_DEVICE_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          robot -d Reports/second_version --loglevel TRACE UiTests/TestSuite.robot
+
+      - name: Archive Test Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: iOS Automation Reports
+          path: Reports/second_version
+
+      - name: Stop Appium Server
+        run: pkill -f appium
+
+      - name: Clean up
+        run: |
+          ls {.,App}
+          rm -rf /tmp/appium*
+          rm -f App/ios_build.tar.gz
+          rm -rf App/test.app
+          rm -rf venv
+
+  autotests-third-version:
+    name: iOS Automation Test for OS Version ${{ vars.IOS_THIRD_DEVICE_VERSION }}
+    runs-on: macos-13
+
+    steps:
+      - name: Environment Set Up
+        uses: huynhlan21/test-autotests@v5
+        with:
+          env-setup: "env-setup-third-version"
+
+      - name: Set up Second iOS Simulator
+        id: setup-third-simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: "${{ vars.IOS_THIRD_DEVICE_MODEL}}"
+          os_version: ${{ vars.IOS_THIRD_DEVICE_VERSION }}
+
+      - name: Modify iOS UDID
+        run: |
+          echo "IOS_THIRD_DEVICE_UDID=${{ steps.setup-third-simulator.outputs.udid }}" >> $GITHUB_ENV
+          python3 - <<EOF
+          file_path = 'Resources/Locators/CommonLocators.robot'
+          read_file = open(file_path, 'r')
+          file_content = read_file.read()
+          modify_content = file_content.replace("iphone_device_udid", "${{ env.IOS_THIRD_DEVICE_UDID }}")
+          modify_content = file_content.replace("iphone_device_model", "${{ vars.IOS_THIRD_DEVICE_MODEL }}")
+          modify_content = file_content.replace("iphone_device_version", "${{ vars.IOS_THIRD_DEVICE_VERSION }}")
+          read_file.close()
+          modify_file = open(file_path, 'w')
+          modify_file.write(modify_content)
+          modify_file.close()
+          exit()
+          EOF
+
+      - name: Run and Test on iOS Simulator
+        run: |
+          xcrun simctl install "${{ env.IOS_THIRD_DEVICE_UDID }}" "App/test.app"
+          xcrun simctl launch "${{env.IOS_THIRD_DEVICE_UDID }}" ${{ vars.IOS_BUNDLE_IDENTIFIER }}
+          robot -d Reports/third_version --loglevel TRACE UiTests/TestSuite.robot
+
+      - name: Archive Test Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: iOS Automation Reports
+          path: Reports/third_version
 
       - name: Stop Appium Server
         run: pkill -f appium
